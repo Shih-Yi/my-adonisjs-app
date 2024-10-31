@@ -1,5 +1,7 @@
 // 引入 Bootstrap 的 CSS
 import 'bootstrap/dist/css/bootstrap.min.css'
+// 在你的 main.js 或 main.ts 中引入 FontAwesome
+import '@fortawesome/fontawesome-free/js/all.min.js'
 
 // 引入 Bootstrap 的 JS 和 Popper.js
 import * as bootstrap from 'bootstrap'
