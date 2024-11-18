@@ -16,4 +16,5 @@ export default defineConfig({
       reload: ['resources/views/**/*.edge'],
     }),
   ],
+  publicDir: 'resources',
 })
