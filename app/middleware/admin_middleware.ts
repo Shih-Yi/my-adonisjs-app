@@ -7,9 +7,8 @@ export default class AdminMiddleware {
       // Ensure user is logged in
       await auth.authenticate()
 
-      // Check if user is admin
-      if (auth.user?.isAdmin) {
-        // Add admin info to session
+      // Check if user is admin (all AdminUser instances are admins)
+      if (auth.user) {
         session.put('adminLastAccess', new Date().toISOString())
         return next()
       }
