@@ -26,6 +26,6 @@ export default class AdminAuthController {
 
   async logout({ response, auth }: HttpContext) {
     await auth.use('admin').logout()
-    return response.redirect().toRoute('auth.admin.login')
+    return response.redirect().toRoute('admin.auth.login')
   }
 }

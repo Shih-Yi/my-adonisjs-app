@@ -48,16 +48,21 @@ router
   })
   .prefix('/api')
 
-// Admin authentication routes
+// Admin authentication routes (for login)
 router
   .group(() => {
-    router.get('/admin/login', [AdminAuthController, 'showLogin']).as('auth.admin.login')
-    router.post('/admin/login', [AdminAuthController, 'login']).as('auth.admin.login.store')
-    router.post('/admin/logout', [AdminAuthController, 'logout']).as('auth.admin.logout')
+    router.get('/admin/login', [AdminAuthController, 'showLogin']).as('admin.auth.login')
+    router.post('/admin/login', [AdminAuthController, 'login']).as('admin.auth.login.store')
   })
   .middleware([middleware.guest({ guards: ['admin'] })])
 
-// Admin routes
+// Admin logout route (needs auth middleware)
+router
+  .post('/admin/logout', [AdminAuthController, 'logout'])
+  .as('admin.auth.logout')
+  .middleware([middleware.auth({ guards: ['admin'] })])
+
+// Admin protected routes
 router
   .group(() => {
     // Admin dashboard
