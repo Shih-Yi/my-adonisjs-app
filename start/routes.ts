@@ -16,7 +16,7 @@ const PagesController = () => import('#controllers/pages_controller')
 const PostsController = () => import('#controllers/posts_controller')
 const AdminDashboardController = () => import('#controllers/admin/dashboard_controller')
 const AdminPagesController = () => import('#controllers/admin/pages_controller')
-const AuthController = () => import('#controllers/auth_controller')
+const AdminAuthController = () => import('#controllers/admin/auth_controller')
 
 // Public routes (no authentication required)
 router.get('/', [HomeController, 'index'])
@@ -48,35 +48,14 @@ router
   })
   .prefix('/api')
 
-// User authentication routes
-router
-  .group(() => {
-    router.get('/login', [AuthController, 'showLogin']).as('auth.login')
-    router.post('/login', [AuthController, 'login']).as('auth.login.store')
-  })
-  .middleware([middleware.guest({ guards: ['web'] })])
-
 // Admin authentication routes
 router
   .group(() => {
-    router.get('/admin/login', [AuthController, 'showAdminLogin']).as('auth.admin.login')
-    router.post('/admin/login', [AuthController, 'adminLogin']).as('auth.admin.login.store')
+    router.get('/admin/login', [AdminAuthController, 'showLogin']).as('auth.admin.login')
+    router.post('/admin/login', [AdminAuthController, 'login']).as('auth.admin.login.store')
+    router.post('/admin/logout', [AdminAuthController, 'logout']).as('auth.admin.logout')
   })
   .middleware([middleware.guest({ guards: ['admin'] })])
-
-// User logout (web guard)
-router
-  .group(() => {
-    router.post('/logout', [AuthController, 'logout']).as('auth.logout')
-  })
-  .middleware([middleware.auth({ guards: ['web'] })])
-
-// Admin logout (admin guard)
-router
-  .group(() => {
-    router.post('/admin/logout', [AuthController, 'logout']).as('auth.admin.logout')
-  })
-  .middleware([middleware.auth({ guards: ['admin'] })])
 
 // Admin routes
 router

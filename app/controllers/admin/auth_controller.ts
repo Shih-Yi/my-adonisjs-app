@@ -1,18 +1,18 @@
 import AdminUser from '#models/admin_user'
 import { HttpContext } from '@adonisjs/core/http'
-import { loginValidator } from '#validators/auth'
+import { adminLoginValidator } from '#validators/admin'
 
-export default class AuthController {
-  async showAdminLogin({ view, i18n }: HttpContext) {
-    return view.render('auth/login', {
+export default class AdminAuthController {
+  async showLogin({ view, i18n }: HttpContext) {
+    return view.render('admin/auth/login', {
       title: i18n.t('messages.auth.login.title'),
     })
   }
 
-  async adminLogin({ request, response, auth, session, i18n }: HttpContext) {
+  async login({ request, response, auth, session, i18n }: HttpContext) {
     try {
       // 1. Validate the request data
-      const { email, password } = await request.validateUsing(loginValidator)
+      const { email, password } = await request.validateUsing(adminLoginValidator)
       // 2. Verify the user's credentials
       const adminUser = await AdminUser.verifyCredentials(email, password)
       // 3. Login our user and use admin guard
@@ -25,7 +25,7 @@ export default class AuthController {
   }
 
   async logout({ response, auth }: HttpContext) {
-    await auth.use('web').logout()
-    return response.redirect().toRoute('/')
+    await auth.use('admin').logout()
+    return response.redirect().toRoute('auth.admin.login')
   }
 }
