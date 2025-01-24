@@ -1,8 +1,13 @@
-@layout('layouts/admin')
+@component('layouts/auth')
   @slot('main')
     <div class="container mt-5">
       <div class="row justify-content-center">
         <div class="col-md-6">
+          <div class="text-end mb-3">
+            <a href="{{ route('language', { locale: 'en' }) }}" class="btn btn-sm btn-link">English</a>
+            <a href="{{ route('language', { locale: 'zh-TW' }) }}" class="btn btn-sm btn-link">中文</a>
+          </div>
+
           <div class="card">
             <div class="card-body">
               <h3 class="card-title text-center mb-4">{{ t('messages.auth.login.title') }}</h3>
@@ -13,7 +18,7 @@
                 </div>
               @endif
 
-              <form action="{{ route('auth.admin.login.store') }}" method="POST">
+              <form action="{{ route('admin.auth.login.store') }}" method="POST">
                 @!component('components/csrf')
 
                 <div class="mb-3">
