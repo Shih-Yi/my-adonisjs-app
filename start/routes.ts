@@ -18,32 +18,12 @@ const AdminDashboardController = () => import('#controllers/admin/dashboard_cont
 const AdminPagesController = () => import('#controllers/admin/pages_controller')
 const AuthController = () => import('#controllers/auth_controller')
 
+// Public routes (no authentication required)
 router.get('/', [HomeController, 'index'])
-
 router.get('/posts', [PostsController, 'index']).as('posts.index')
 router.post('/posts', [PostsController, 'store'])
 
-router
-  .group(() => {
-    router.get('/', [AdminDashboardController, 'dashboard']).as('admin.dashboard')
-  })
-  .prefix('/admin')
-  .middleware([middleware.auth({ guards: ['admin'] }), middleware.admin()])
-
-// Auth routes with correct middleware syntax
-router
-  .group(() => {
-    router.get('/login', [AuthController, 'showLogin']).as('auth.login')
-    router.post('/login', [AuthController, 'login']).as('auth.login.store')
-  })
-  .middleware([middleware.guest()])
-
-router
-  .group(() => {
-    router.post('/logout', [AuthController, 'logout']).as('auth.logout')
-  })
-  .middleware([middleware.auth()])
-
+// Language switcher
 router
   .get('/language/:locale', async ({ params, response, i18n, session }) => {
     const { locale } = params
@@ -57,28 +37,58 @@ router
   })
   .as('language')
 
+// Public API routes
 router
   .group(() => {
-    // Navigation data for all pages
     router.get('/navigation', [PagesController, 'getNavigation'])
-
-    // Get pages by type with full hierarchy
     router.get('/:type/pages', [PagesController, 'getPageHierarchy'])
-
-    // Dynamic routes for nested pages
     router.get('/:type/:slug', [PagesController, 'show'])
     router.get('/:type/:parentSlug/:slug', [PagesController, 'show'])
     router.get('/:type/:grandparentSlug/:parentSlug/:slug', [PagesController, 'show'])
   })
   .prefix('/api')
 
-// Admin routes for managing pages
+// User authentication routes
 router
   .group(() => {
+    router.get('/login', [AuthController, 'showLogin']).as('auth.login')
+    router.post('/login', [AuthController, 'login']).as('auth.login.store')
+  })
+  .middleware([middleware.guest({ guards: ['web'] })])
+
+// Admin authentication routes
+router
+  .group(() => {
+    router.get('/admin/login', [AuthController, 'showAdminLogin']).as('auth.admin.login')
+    router.post('/admin/login', [AuthController, 'adminLogin']).as('auth.admin.login.store')
+  })
+  .middleware([middleware.guest({ guards: ['admin'] })])
+
+// User logout (web guard)
+router
+  .group(() => {
+    router.post('/logout', [AuthController, 'logout']).as('auth.logout')
+  })
+  .middleware([middleware.auth({ guards: ['web'] })])
+
+// Admin logout (admin guard)
+router
+  .group(() => {
+    router.post('/admin/logout', [AuthController, 'logout']).as('auth.admin.logout')
+  })
+  .middleware([middleware.auth({ guards: ['admin'] })])
+
+// Admin routes
+router
+  .group(() => {
+    // Admin dashboard
+    router.get('/', [AdminDashboardController, 'dashboard']).as('admin.dashboard')
+
+    // Admin pages management
     router.get('/pages', [AdminPagesController, 'index'])
     router.post('/pages', [AdminPagesController, 'store'])
     router.put('/pages/:id', [AdminPagesController, 'update'])
     router.delete('/pages/:id', [AdminPagesController, 'destroy'])
   })
   .prefix('/admin')
-  .middleware([middleware.auth()])
+  .middleware([middleware.auth({ guards: ['admin'] }), middleware.admin()])
