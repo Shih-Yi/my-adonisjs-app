@@ -1,0 +1,32 @@
+{{-- Loop through top level pages --}}
+@each(page in navigation[type])
+  <li class="menu-item-has-children">
+    <a href="/{{ page.type }}/{{ page.slug }}">{{ page.title }}</a>
+
+    @if(page.children.length)
+      <ul class="sub-menu">
+        {{-- Second level --}}
+        @each(child in page.children)
+          <li class="{{ child.children.length ? 'has-children' : '' }}">
+            <a href="/{{ page.type }}/{{ page.slug }}/{{ child.slug }}">
+              {{ child.title }}
+            </a>
+
+            @if(child.children.length)
+              <ul class="third-level">
+                {{-- Third level --}}
+                @each(grandchild in child.children)
+                  <li>
+                    <a href="/{{ page.type }}/{{ page.slug }}/{{ child.slug }}/{{ grandchild.slug }}">
+                      {{ grandchild.title }}
+                    </a>
+                  </li>
+                @end
+              </ul>
+            @end
+          </li>
+        @end
+      </ul>
+    @end
+  </li>
+@end

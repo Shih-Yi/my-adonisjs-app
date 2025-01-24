@@ -10,10 +10,13 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import i18nManager from '@adonisjs/i18n/services/main'
+
+const HomeController = () => import('#controllers/home_controller')
+const PagesController = () => import('#controllers/pages_controller')
 const PostsController = () => import('#controllers/posts_controller')
 const AdminDashboardController = () => import('#controllers/admin/dashboard_controller')
+const AdminPagesController = () => import('#controllers/admin/pages_controller')
 const AuthController = () => import('#controllers/auth_controller')
-const HomeController = () => import('#controllers/home_controller')
 
 router.get('/', [HomeController, 'index'])
 
@@ -53,3 +56,29 @@ router
     return response.redirect().back()
   })
   .as('language')
+
+router
+  .group(() => {
+    // Navigation data for all pages
+    router.get('/navigation', [PagesController, 'getNavigation'])
+
+    // Get pages by type with full hierarchy
+    router.get('/:type/pages', [PagesController, 'getPageHierarchy'])
+
+    // Dynamic routes for nested pages
+    router.get('/:type/:slug', [PagesController, 'show'])
+    router.get('/:type/:parentSlug/:slug', [PagesController, 'show'])
+    router.get('/:type/:grandparentSlug/:parentSlug/:slug', [PagesController, 'show'])
+  })
+  .prefix('/api')
+
+// Admin routes for managing pages
+router
+  .group(() => {
+    router.get('/pages', [AdminPagesController, 'index'])
+    router.post('/pages', [AdminPagesController, 'store'])
+    router.put('/pages/:id', [AdminPagesController, 'update'])
+    router.delete('/pages/:id', [AdminPagesController, 'destroy'])
+  })
+  .prefix('/admin')
+  .middleware([middleware.guest()])
