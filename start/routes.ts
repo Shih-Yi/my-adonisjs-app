@@ -25,10 +25,10 @@ router.post('/posts', [PostsController, 'store'])
 
 router
   .group(() => {
-    router.get('/', [AdminDashboardController, 'dashboard'])
+    router.get('/', [AdminDashboardController, 'dashboard']).as('admin.dashboard')
   })
   .prefix('/admin')
-  .middleware([middleware.auth(), middleware.admin()])
+  .middleware([middleware.auth({ guards: ['admin'] }), middleware.admin()])
 
 // Auth routes with correct middleware syntax
 router
@@ -81,4 +81,4 @@ router
     router.delete('/pages/:id', [AdminPagesController, 'destroy'])
   })
   .prefix('/admin')
-  .middleware([middleware.guest()])
+  .middleware([middleware.auth()])

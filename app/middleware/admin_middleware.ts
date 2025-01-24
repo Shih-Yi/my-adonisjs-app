@@ -1,14 +1,16 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { NextFn } from '@adonisjs/core/types/http'
+import type AdminUser from '#models/admin_user'
 
 export default class AdminMiddleware {
   async handle({ auth, response, session, request }: HttpContext, next: NextFn) {
     try {
-      // Ensure user is logged in
-      await auth.authenticate()
+      // Ensure user is logged in and using the admin guard (/config/auth.ts)
+      await auth.use('admin').authenticate()
 
       // Check if user is admin (all AdminUser instances are admins)
-      if (auth.user) {
+      const adminUser = auth.user as AdminUser
+      if (adminUser) {
         session.put('adminLastAccess', new Date().toISOString())
         return next()
       }
