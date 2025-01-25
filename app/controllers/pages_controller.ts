@@ -30,11 +30,4 @@ export default class PagesController {
 
     return page
   }
-
-  /**
-   * Get page navigation structure
-   */
-  async getNavigation() {
-    return Page.getNavigation()
-  }
 }

@@ -1,32 +1,36 @@
-{{-- Loop through top level pages --}}
-@each(page in navigation[type])
-  <li class="menu-item-has-children">
-    <a href="/{{ page.type }}/{{ page.slug }}">{{ page.title }}</a>
+{{-- 遍歷所有頁面類型 --}}
+@each(pageType in type)
+  {{-- 檢查該類型是否有頁面 --}}
+  @if(navigation[pageType]?.length)
+    <li class="menu-item-has-children">
+      {{-- 遍歷該類型的頁面 --}}
+      @each(page in navigation[pageType])
+        <a href="/{{ pageType }}/{{ page.slug }}">{{ page.title }}</a>
 
-    @if(page.children.length)
-      <ul class="sub-menu">
-        {{-- Second level --}}
-        @each(child in page.children)
-          <li class="{{ child.children.length ? 'has-children' : '' }}">
-            <a href="/{{ page.type }}/{{ page.slug }}/{{ child.slug }}">
-              {{ child.title }}
-            </a>
+        {{-- 如果有子頁面 --}}
+        @if(page.children?.length)
+          <ul class="sub-menu">
+            @each(child in page.children)
+              <li>
+                <a href="/{{ pageType }}/{{ page.slug }}/{{ child.slug }}">
+                  {{ child.title }}
+                </a>
 
-            @if(child.children.length)
-              <ul class="third-level">
-                {{-- Third level --}}
-                @each(grandchild in child.children)
-                  <li>
-                    <a href="/{{ page.type }}/{{ page.slug }}/{{ child.slug }}/{{ grandchild.slug }}">
-                      {{ grandchild.title }}
-                    </a>
-                  </li>
+                {{-- 第三層頁面 --}}
+                @if(child.children?.length)
+                    @each(grandchild in child.children)
+                      <li>
+                        <a href="/{{ pageType }}/{{ page.slug }}/{{ child.slug }}/{{ grandchild.slug }}">
+                          {{ grandchild.title }}
+                        </a>
+                      </li>
+                    @end
                 @end
-              </ul>
+              </li>
             @end
-          </li>
+          </ul>
         @end
-      </ul>
-    @end
-  </li>
+      @end
+    </li>
+  @end
 @end
