@@ -51,10 +51,10 @@ router
 // Admin authentication routes (for login)
 router
   .group(() => {
-    router.get('/admin/login', [AdminAuthController, 'showLogin']).as('admin.auth.login')
+    router.get('/admin/login', [AdminAuthController, 'show']).as('admin.auth.login')
     router.post('/admin/login', [AdminAuthController, 'login']).as('admin.auth.login.store')
   })
-  .middleware([middleware.guest({ guards: ['admin'] })])
+  .middleware([middleware.guest()])
 
 // Admin logout route (needs auth middleware)
 router

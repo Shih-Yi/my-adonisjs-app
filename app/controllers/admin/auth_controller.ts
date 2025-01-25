@@ -3,7 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import { adminLoginValidator } from '#validators/admin'
 
 export default class AdminAuthController {
-  async showLogin({ view, i18n }: HttpContext) {
+  async show({ view, i18n }: HttpContext) {
     return view.render('admin/auth/login', {
       title: i18n.t('messages.auth.login.title'),
     })
