@@ -44,9 +44,6 @@ export default class AdminUser extends compose(BaseModel, AuthFinder) {
   @beforeSave()
   static async hashPassword(adminUser: AdminUser) {
     if (adminUser.$dirty.password) {
-      if (adminUser.password.length < 8 || adminUser.password.length > 16) {
-        throw new Error('Password must be between 8 and 16 characters')
-      }
       adminUser.password = await hash.make(adminUser.password)
     }
   }
