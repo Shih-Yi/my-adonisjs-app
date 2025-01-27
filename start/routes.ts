@@ -70,10 +70,10 @@ router
 
     // Admin pages management
     router.get('/pages', [AdminPagesController, 'index']).as('admin.pages.index')
-    router.get('/pages/:id', [AdminPagesController, 'show']).as('admin.pages.show')
     router.get('/pages/create', [AdminPagesController, 'create']).as('admin.pages.create')
     router.post('/pages', [AdminPagesController, 'store']).as('admin.pages.store')
     router.get('/pages/:id/edit', [AdminPagesController, 'edit']).as('admin.pages.edit')
+    router.get('/pages/:id', [AdminPagesController, 'show']).as('admin.pages.show')
     router.put('/pages/:id', [AdminPagesController, 'update']).as('admin.pages.update')
     router.delete('/pages/:id', [AdminPagesController, 'destroy']).as('admin.pages.destroy')
   })
