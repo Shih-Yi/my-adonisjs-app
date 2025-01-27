@@ -12,7 +12,6 @@ import { middleware } from './kernel.js'
 import i18nManager from '@adonisjs/i18n/services/main'
 
 const HomeController = () => import('#controllers/home_controller')
-const PagesController = () => import('#controllers/pages_controller')
 const PostsController = () => import('#controllers/posts_controller')
 const AdminDashboardController = () => import('#controllers/admin/dashboard_controller')
 const AdminPagesController = () => import('#controllers/admin/pages_controller')
@@ -36,17 +35,6 @@ router
     return response.redirect().back()
   })
   .as('language')
-
-// Public API routes
-router
-  .group(() => {
-    router.get('/navigation', [PagesController, 'getNavigation'])
-    router.get('/:type/pages', [PagesController, 'getPageHierarchy'])
-    router.get('/:type/:slug', [PagesController, 'show'])
-    router.get('/:type/:parentSlug/:slug', [PagesController, 'show'])
-    router.get('/:type/:grandparentSlug/:parentSlug/:slug', [PagesController, 'show'])
-  })
-  .prefix('/api')
 
 // Admin authentication routes (for login)
 router
