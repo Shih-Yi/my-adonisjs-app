@@ -1,0 +1,77 @@
+@layout.admin()
+  @slot('main')
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Pages</h1>
+
+      {{-- 頁面操作按鈕 --}}
+      <div class="mb-4">
+        <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
+          <i class="fas fa-plus"></i> Create New Page
+        </a>
+      </div>
+
+      {{-- 頁面列表 --}}
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Slug</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @each(page in pages)
+                  <tr>
+                    <td>
+                      @if(page.parentId)
+                        <span class="ms-3">↳</span>
+                      @end
+                      {{ page.title }}
+                    </td>
+                    <td>
+                      <span class="badge bg-secondary">{{ page.type }}</span>
+                    </td>
+                    <td>{{ page.slug }}</td>
+                    <td>
+                      @if(page.isActive)
+                        <span class="badge bg-success">Active</span>
+                      @else
+                        <span class="badge bg-danger">Inactive</span>
+                      @end
+                    </td>
+                    <td>{{ page.createdAt.toFormat('yyyy-MM-dd') }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <a href="{{ route('admin.pages.edit', [page.id]) }}"
+                           class="btn btn-sm btn-outline-primary">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ route('admin.pages.destroy', [page.id], { qs: { _method: 'DELETE'}}) }}"
+                              method="POST"
+                              onsubmit="return confirm('Are you sure?')"
+                              class="d-inline">
+                          {{ csrfField() }}
+                          {{-- 使用 _method 欄位模擬 DELETE 請求 --}}
+
+                          <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                @end
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  @end
+@end

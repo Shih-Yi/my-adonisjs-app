@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - {{ title || 'Admin Area' }}</title>
+  @vite(['resources/js/app.js'])
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/admin">Admin Dashboard</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="adminNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/users">Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/pages">Pages</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/settings">Settings</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center">
+          @if(auth.user)
+            <span class="navbar-text me-3">
+              Welcome, {{ auth.user.username || auth.user.email }}
+            </span>
+            <form action="{{ route('admin.auth.logout') }}" method="POST" class="mb-0">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-outline-light">Logout</button>
+            </form>
+          @endif
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    {{{ await $slots.main() }}}
+  </div>
+
+</body>
+</html>
