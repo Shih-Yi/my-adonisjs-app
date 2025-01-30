@@ -79,4 +79,32 @@
       'bullist numlist outdent indent | link image media | ' +
       'removeformat code'
   })
+
+  // Update parent page options when page type is selected
+  document.getElementById('type').addEventListener('change', function() {
+    const selectedType = this.value
+    const parentSelect = document.getElementById('parentId')
+    const options = parentSelect.querySelectorAll('option')
+
+    options.forEach(option => {
+      if (option.value === '') {
+        // Always show "No Parent" option
+        option.style.display = ''
+      } else {
+        // Show only options with matching type
+        option.style.display = option.dataset.type === selectedType ? '' : 'none'
+      }
+    })
+
+    // If current selected parent is not of the same type, reset to "No Parent"
+    const currentSelected = parentSelect.selectedOptions[0]
+    if (currentSelected && currentSelected.value !== '' && currentSelected.dataset.type !== selectedType) {
+      parentSelect.value = ''
+    }
+  })
+
+  // Trigger on page load if editing
+  if (document.getElementById('type').value) {
+    document.getElementById('type').dispatchEvent(new Event('change'))
+  }
 </script>
