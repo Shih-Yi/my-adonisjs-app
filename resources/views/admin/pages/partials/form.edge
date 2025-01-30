@@ -25,6 +25,19 @@
   </div>
 
   <div class="mb-3">
+    <label for="parentId" class="form-label">Parent Page</label>
+    <select class="form-select" id="parentId" name="parentId">
+      <option value="">No Parent</option>
+      @each(parentOption in parentPages)
+        <option value="{{ parentOption.id }}"
+          {{ page?.parentId === parentOption.id ? 'selected' : '' }}>
+          {{ parentOption.title }}
+        </option>
+      @end
+    </select>
+  </div>
+
+  <div class="mb-3">
     <label for="content" class="form-label">Content</label>
     <textarea class="form-control"
               id="content"

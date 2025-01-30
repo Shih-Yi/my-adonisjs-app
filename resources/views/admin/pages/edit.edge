@@ -8,7 +8,8 @@
           @!component('admin/pages/partials/form', {
             formAction: route('admin.pages.update', { id: page.id }, { qs: { _method: 'PUT'}}),
             types: types,
-            page: page
+            page: page,
+            parentPages: parentPages
           })
         </div>
       </div>
