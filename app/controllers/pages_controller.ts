@@ -1,6 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Page from '#models/page'
 import BaseController from './base_controller.js'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 export default class PagesController extends BaseController {
   /**
@@ -32,6 +34,12 @@ export default class PagesController extends BaseController {
       })
       .firstOrFail()
 
-    return ctx.view.render('pages/show', { page })
+    const customTemplate = `pages/custom/${ctx.params.slug}`
+    const templatePath = join(process.cwd(), 'resources/views', `${customTemplate}.edge`)
+    console.log(templatePath)
+    return ctx.view.render('pages/show', {
+      page,
+      customTemplate: existsSync(templatePath) ? customTemplate : null,
+    })
   }
 }

@@ -1,10 +1,132 @@
-@layout('layouts/main')
-  @slot('main')
-    <div class="container">
-      <h1>{{ page.title }}</h1>
+@layout.main()
 
-      {{-- Safely render HTML content --}}
-      {{{ page.content }}}
+  @slot('main')
+    {{-- <div class="page-content-wrapper">
+      <div class="container py-5">
+        <article class="page-content">
+          <header class="mb-4">
+            <h1>{{ page.title }}</h1>
+          </header>
+
+          <div class="content">
+            @if(customTemplate)
+              @include(customTemplate)
+            @else
+              {{{ page.content }}}
+            @end
+          </div>
+        </article>
+      </div>
+
+
+    </div> --}}
+
+
+    <div class="page-content-wrapper">
+      	<section class="gap blog-detail">
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-lg-8 col-md-12 col-sm-12">
+
+					<div class="blog-meta">
+
+						<h2>{{ page.title }}</h2>
+
+					</div>
+
+					<div class="content">
+
+            @if(customTemplate)
+              @include(customTemplate)
+            @else
+              {{{ page.content }}}
+            @end
+
+					</div>
+
+
+
+
+
+
+				</div>
+
+				<div class="col-lg-4 col-md-12 col-sm-12">
+
+					<aside>
+
+						<div class="blog-sidebar">
+
+							<div class="widget widget-recent-articles">
+
+								<h3>Recent Articles</h3>
+
+								<ul>
+
+									<li class="d-flex align-items-center">
+
+										<img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image">
+
+										<div>
+
+											<p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">21 dec, 2021</p>
+
+											<a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
+
+										</div>
+
+									</li>
+
+									<li class="d-flex align-items-center">
+
+										<img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image One">
+
+										<div>
+
+											<p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">21 dec, 2021</p>
+
+											<a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
+
+										</div>
+
+									</li>
+
+									<li class="d-flex align-items-center">
+
+										<img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image Two">
+
+										<div>
+
+											<p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">21 dec, 2021</p>
+
+											<a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
+
+										</div>
+
+									</li>
+
+								</ul>
+
+							</div>
+
+
+						</div>
+
+					</aside>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</section>
     </div>
+
+
   @end
+
 @end
