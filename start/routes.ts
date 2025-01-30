@@ -16,6 +16,7 @@ const PostsController = () => import('#controllers/posts_controller')
 const AdminDashboardController = () => import('#controllers/admin/dashboard_controller')
 const AdminPagesController = () => import('#controllers/admin/pages_controller')
 const AdminAuthController = () => import('#controllers/admin/auth_controller')
+const PagesController = () => import('#controllers/pages_controller')
 
 // Public routes (no authentication required)
 router.get('/', [HomeController, 'index'])
@@ -67,3 +68,6 @@ router
   })
   .prefix('/admin')
   .middleware([middleware.auth({ guards: ['admin'] }), middleware.admin()])
+
+// Public routes
+router.get('pages/:slug', [PagesController, 'show']).as('pages.show')
