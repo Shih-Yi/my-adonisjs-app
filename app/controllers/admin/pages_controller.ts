@@ -15,13 +15,15 @@ export default class AdminPagesController {
       .orderBy([
         { column: 'type', order: 'asc' },
         { column: 'parent_id', order: 'asc', nulls: 'first' },
-        { column: 'id', order: 'asc' },
         { column: 'order', order: 'asc' },
       ])
 
     // Reorganize data at application layer
     const organizedPages = pages.sort((a, b) => {
       if (a.type !== b.type) return a.type.localeCompare(b.type)
+      if (a.parentId === b.parentId) {
+        return a.order - b.order
+      }
       const aPath = this.getPagePath(a, pages)
       const bPath = this.getPagePath(b, pages)
       return aPath.localeCompare(bPath)
@@ -35,10 +37,14 @@ export default class AdminPagesController {
     const path = []
     let currentPage = page
     while (currentPage.parentId) {
-      path.unshift(currentPage.id.toString().padStart(10, '0'))
+      // 加入當前頁面的 order
+      path.unshift(currentPage.order.toString().padStart(10, '0'))
+      // 找到父頁面
       currentPage = allPages.find((p) => p.id === currentPage.parentId)!
     }
-    path.unshift(currentPage.id.toString().padStart(10, '0'))
+
+    // 加入根頁面的 order
+    path.unshift(currentPage.order.toString().padStart(10, '0'))
     return path.join('.')
   }
 
