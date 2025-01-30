@@ -1,18 +1,18 @@
 {{-- 遍歷所有頁面類型 --}}
-@each(pageType in type)
+@each(type in pageType)
   {{-- 檢查該類型是否有頁面 --}}
-  @if(navigation[pageType]?.length)
+  @if(navigation[type]?.length)
     <li class="menu-item-has-children">
       {{-- 遍歷該類型的頁面 --}}
-      @each(page in navigation[pageType])
-        <a href="/{{ pageType }}/{{ page.slug }}">{{ page.title }}</a>
+      @each(page in navigation[type])
+        <a href="/pages/{{ page.slug }}">{{ page.title }}</a>
 
         {{-- 如果有子頁面 --}}
         @if(page.children?.length)
           <ul class="sub-menu">
             @each(child in page.children)
               <li>
-                <a href="/{{ pageType }}/{{ page.slug }}/{{ child.slug }}">
+                <a href="/pages/{{ child.slug }}">
                   {{ child.title }}
                 </a>
 
@@ -20,7 +20,7 @@
                 @if(child.children?.length)
                     @each(grandchild in child.children)
                       <li>
-                        <a href="/{{ pageType }}/{{ page.slug }}/{{ child.slug }}/{{ grandchild.slug }}">
+                        <a href="/pages/{{ grandchild.slug }}">
                           {{ grandchild.title }}
                         </a>
                       </li>
