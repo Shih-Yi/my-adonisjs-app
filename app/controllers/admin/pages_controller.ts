@@ -10,14 +10,35 @@ export default class AdminPagesController {
     const user = auth.user!
 
     const pages = await Page.query()
-      .orderBy('type')
-      .orderByRaw('CASE WHEN parent_id IS NULL THEN 0 ELSE 1 END')
-      .orderByRaw(
-        'CASE WHEN parent_id IN (SELECT id FROM pages WHERE parent_id IS NULL) THEN 1 ELSE 2 END'
-      )
-      .orderBy('order')
+      .preload('parent')
+      .orderBy([
+        { column: 'type', order: 'asc' },
+        { column: 'parent_id', order: 'asc', nulls: 'first' },
+        { column: 'id', order: 'asc' },
+        { column: 'order', order: 'asc' },
+      ])
 
-    return view.render('admin/pages/index', { pages })
+    // Reorganize data at application layer
+    const organizedPages = pages.sort((a, b) => {
+      if (a.type !== b.type) return a.type.localeCompare(b.type)
+      const aPath = this.getPagePath(a, pages)
+      const bPath = this.getPagePath(b, pages)
+      return aPath.localeCompare(bPath)
+    })
+
+    return view.render('admin/pages/index', { pages: organizedPages })
+  }
+
+  // get page path
+  private getPagePath(page: Page, allPages: Page[]) {
+    const path = []
+    let currentPage = page
+    while (currentPage.parentId) {
+      path.unshift(currentPage.id.toString().padStart(10, '0'))
+      currentPage = allPages.find((p) => p.id === currentPage.parentId)!
+    }
+    path.unshift(currentPage.id.toString().padStart(10, '0'))
+    return path.join('.')
   }
 
   /**
