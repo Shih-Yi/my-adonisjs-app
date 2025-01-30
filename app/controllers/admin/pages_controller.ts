@@ -122,9 +122,17 @@ export default class AdminPagesController {
    * Update page
    */
   async update({ request, response, params }: HttpContext) {
-    console.log('Method:', request.method())
     const page = await Page.findOrFail(params.id)
+    await page.load('children') // Load children to check
+
     const data = request.only(['title', 'type', 'content', 'parentId', 'isActive'])
+
+    // If page has children, don't allow changing parentId
+    if (page.children.length > 0 && data.parentId !== page.parentId) {
+      return response
+        .status(422)
+        .send({ error: 'Cannot change parent of a page that has children' })
+    }
 
     // Convert empty string to null for parentId
     if (data.parentId === '') {
