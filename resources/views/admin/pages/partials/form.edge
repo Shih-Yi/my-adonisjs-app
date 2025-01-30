@@ -15,7 +15,9 @@
 
   <div class="mb-3">
     <label for="type" class="form-label">Type</label>
-    <select class="form-select" id="type" name="type" required>
+    <select class="form-select" id="type" name="type"
+      {{ page && page.parentId == null ? 'disabled' : '' }}
+      required>
       @each(type in types)
         <option value="{{ type }}" {{ page?.type === type ? 'selected' : '' }}>
           {{ type }}
@@ -26,15 +28,24 @@
 
   <div class="mb-3">
     <label for="parentId" class="form-label">Parent Page</label>
-    <select class="form-select" id="parentId" name="parentId">
+    <select class="form-select"
+            id="parentId"
+            name="parentId"
+            {{ page && page.parentId == null ? 'disabled' : '' }} required>
       <option value="">No Parent</option>
       @each(parentOption in parentPages)
         <option value="{{ parentOption.id }}"
+          data-type="{{ parentOption.type }}"
           {{ page?.parentId === parentOption.id ? 'selected' : '' }}>
           {{ parentOption.title }}
         </option>
       @end
     </select>
+    @if(page && page.parentId == null )
+      <div class="form-text text-muted">
+        Cannot change parent because this page is a root page
+      </div>
+    @end
   </div>
 
   <div class="mb-3">
