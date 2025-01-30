@@ -1,14 +1,10 @@
 @layout.main()
 
-  <body>
 
-	<!-- Header Start -->
-    @include('partials/header')
-	<!-- Header Start -->
-
-	<!-- mainSlider here -->
+  @slot('main')
+    <!-- mainSlider here -->
     @include('partials/mainSlider')
-	<!-- mainSlider End -->
+    <!-- mainSlider End -->
 
 
 
@@ -1294,7 +1290,6 @@
 	  </div>
 	</div>
 
-</body>
 {{--
   <script>
 
@@ -1637,6 +1632,7 @@
     // Audio Player End
 
   </script> --}}
+  @end
 @end
 
 
