@@ -14,23 +14,32 @@
       <div class="card">
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" id="pages-table">
               <thead>
                 <tr>
+                  <th style="width: 50px"></th>
                   <th>Title</th>
                   <th>Type</th>
                   <th>Slug</th>
+                  <th>Order</th>
                   <th>Status</th>
                   <th>Created</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="sortable">
                 @each(page in pages)
-                  <tr>
+                  <tr data-id="{{ page.id }}" data-type="{{ page.type }}">
+                    <td>
+                      <i class="fas fa-grip-vertical handle" style="cursor: move"></i>
+                    </td>
                     <td>
                       @if(page.parentId)
-                        <span class="ms-3">↳</span>
+                        @if(page.parent.parentId)
+                          <span class="ms-5">↳</span>
+                        @else
+                          <span class="ms-3">↳</span>
+                        @end
                       @end
                       {{ page.title }}
                     </td>
@@ -38,6 +47,7 @@
                       <span class="badge bg-secondary">{{ page.type }}</span>
                     </td>
                     <td>{{ page.slug }}</td>
+                    <td>{{ page.order }}</td>
                     <td>
                       @if(page.isActive)
                         <span class="badge bg-success">Active</span>
@@ -73,5 +83,43 @@
         </div>
       </div>
     </div>
+
+    {{-- 引入 Sortable.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const tbody = document.querySelector('.sortable')
+
+        new Sortable(tbody, {
+          handle: '.handle',
+          animation: 150,
+          onEnd: async function(evt) {
+            const rows = [...document.querySelectorAll('#pages-table tbody tr')]
+            const updates = rows.map((row, index) => ({
+              id: row.dataset.id,
+              order: index + 1
+            }))
+
+            try {
+              const response = await fetch('{{ route('admin.pages.reorder') }}', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': document.querySelector('[name="_csrf"]').value
+                },
+                body: JSON.stringify({ updates })
+              })
+
+              if (!response.ok) throw new Error('Reorder failed')
+
+            } catch (error) {
+              console.error('Error updating order:', error)
+              alert('Failed to update order. Please try again.')
+            }
+          }
+        })
+      })
+    </script>
   @end
 @end

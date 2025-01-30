@@ -65,6 +65,7 @@ router
     router.get('/pages/:id', [AdminPagesController, 'show']).as('admin.pages.show')
     router.put('/pages/:id', [AdminPagesController, 'update']).as('admin.pages.update')
     router.delete('/pages/:id', [AdminPagesController, 'destroy']).as('admin.pages.destroy')
+    router.post('/pages/reorder', [AdminPagesController, 'reorder']).as('admin.pages.reorder')
   })
   .prefix('/admin')
   .middleware([middleware.auth({ guards: ['admin'] }), middleware.admin()])
