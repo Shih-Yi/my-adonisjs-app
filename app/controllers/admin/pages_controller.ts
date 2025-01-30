@@ -98,6 +98,7 @@ export default class AdminPagesController {
    */
   async edit({ params, view }: HttpContext) {
     const page = await Page.findOrFail(params.id)
+    await page.load('children') // Load children for view
 
     // Get first and second level pages only, excluding current page
     const parentPages = await Page.query()
