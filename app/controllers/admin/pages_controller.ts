@@ -1,5 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Page from '#models/page'
+import db from '@adonisjs/lucid/services/db'
 // import { sanitizeHtml } from '#services/html_sanitizer'
 
 export default class AdminPagesController {
@@ -155,5 +156,26 @@ export default class AdminPagesController {
     await page.delete()
 
     return response.redirect().toRoute('admin.pages.index')
+  }
+
+  async reorder({ request, response }: HttpContext) {
+    const { updates } = request.body()
+
+    // Start a transaction
+    const trx = await db.transaction()
+    console.log('updates', updates)
+    try {
+      for (const update of updates) {
+        await Page.query({ client: trx }).where('id', update.id).update({ order: update.order })
+      }
+
+      await trx.commit()
+      console.log('commit')
+      return response.status(200).send({ message: 'Order updated successfully' })
+    } catch (error) {
+      console.log('error', error)
+      await trx.rollback()
+      return response.status(500).send({ error: 'Failed to update order' })
+    }
   }
 }
