@@ -174,21 +174,21 @@ tinymce.init({
       items: [
         {
           title: 'Left Aligned',
-          selector: ['img', 'div', 'p'],
+          selector: ['img', 'p'],
           styles: {
             'float': 'left',
             'margin': '0 10px 0 0',
-            'max-width': '50%',
+            'max-width': '100%',
             'clear': 'both',
           },
         },
         {
           title: 'Right Aligned',
-          selector: ['img', 'div', 'p'],
+          selector: ['img', 'p'],
           styles: {
             'float': 'right',
             'margin': '0 0 0 10px',
-            'max-width': '50%',
+            'max-width': '100%',
             'clear': 'both',
           },
         },
