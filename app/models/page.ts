@@ -1,5 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, hasMany, beforeSave } from '@adonisjs/lucid/orm'
+import {
+  BaseModel,
+  column,
+  belongsTo,
+  hasMany,
+  beforeSave,
+  beforeCreate,
+} from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import string from '@adonisjs/core/helpers/string'
 
@@ -60,6 +67,14 @@ export default class Page extends BaseModel {
       // "About Our Church" -> "about-our-church"
       page.slug = string.dashCase(page.title)
     }
+  }
+
+  @beforeCreate()
+  public static async setOrder(page: Page) {
+    const count = await Page.query().count('*').first()
+
+    // new page order = total pages + 1
+    page.order = Number(count?.$extras.count ?? 0) + 1
   }
 
   /**
