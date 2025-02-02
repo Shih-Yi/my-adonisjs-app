@@ -89,6 +89,11 @@ li{
     padding: 0;
     margin: 0;
 } */
+.desktop-nav nav .nav-bar ul,
+.desktop-nav nav .nav-bar li {
+    list-style: none;
+
+}
 a,
 a:hover{
     text-decoration: none;
@@ -1234,6 +1239,8 @@ button.scrollTopStick.active {
 }
 .desktop-nav nav .nav-bar ul > li ul.sub-menu .second-level {
     background-color: #ebebeb;
+    border-color: #ebebeb;
+    border: 2px solid #ffffff;
 }
 .desktop-nav nav .nav-bar ul > li ul.sub-menu .second-level:hover{
     background-color: transparent;
@@ -6135,17 +6142,19 @@ border-color: #b1712a;
   object-fit: contain; /* Ensure full image display */
 }
 
-/* Second level page styles */
-
 
 /* Third level page styles */
 .third-level-menu a,
 .third-level {
   color: #718096 !important;
   font-weight: normal !important;
-  font-size: 0.95em !important;
+  font-size: 1em !important;
   background-color: transparent !important;  /* Remove background */
-  padding: 6px 16px !important;
+  padding: 13px 15px !important;
+}
+
+.third-level:hover {
+  color: white !important;
 }
 
 /* Menu structure styles */
