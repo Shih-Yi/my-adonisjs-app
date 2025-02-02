@@ -12,19 +12,21 @@
           <ul class="sub-menu">
             @each(child in page.children)
               <li>
-                <a href="/pages/{{ child.slug }}">
+                <a href="/pages/{{ child.slug }}" class="second-level">
                   {{ child.title }}
                 </a>
 
                 {{-- 第三層頁面 --}}
                 @if(child.children?.length)
+                  <ul class="third-level-menu">
                     @each(grandchild in child.children)
                       <li>
-                        <a href="/pages/{{ grandchild.slug }}">
+                        <a href="/pages/{{ grandchild.slug }}" class="third-level">
                           {{ grandchild.title }}
                         </a>
                       </li>
                     @end
+                  </ul>
                 @end
               </li>
             @end
