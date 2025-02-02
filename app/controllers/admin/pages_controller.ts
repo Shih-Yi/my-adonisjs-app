@@ -136,7 +136,7 @@ export default class AdminPagesController {
     const data = request.only(['title', 'type', 'content', 'parentId', 'isActive'])
 
     // If page has children, don't allow changing parentId
-    if (page.children.length > 0 && data.parentId !== page.parentId) {
+    if (page.children.length > 0 && Number.parseInt(data.parentId, 10) !== page.parentId) {
       return response
         .status(422)
         .send({ error: 'Cannot change parent of a page that has children' })
