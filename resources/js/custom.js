@@ -64,6 +64,172 @@ import 'aos/dist/aos.css'
 
 -----------------------------------------------------------------------------------*/
 
+// TinyMCE
+import tinymce from 'tinymce/tinymce'
+import 'tinymce/themes/silver'
+
+import 'tinymce/plugins/autolink'
+import 'tinymce/plugins/advlist'
+
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/link'
+import 'tinymce/plugins/image'
+import 'tinymce/plugins/charmap'
+import 'tinymce/plugins/preview'
+import 'tinymce/plugins/anchor'
+import 'tinymce/plugins/searchreplace'
+import 'tinymce/plugins/visualblocks'
+import 'tinymce/plugins/code'
+import 'tinymce/plugins/fullscreen'
+import 'tinymce/plugins/insertdatetime'
+import 'tinymce/plugins/media'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/wordcount'
+import 'tinymce/plugins/help'
+import 'tinymce/plugins/visualchars'
+
+import 'tinymce/icons/default/icons'
+import 'tinymce/models/dom'
+import 'tinymce/plugins/help/js/i18n/keynav/en'
+import 'tinymce/skins/ui/oxide/skin'
+import 'tinymce/skins/ui/oxide/content'
+import 'tinymce/skins/content/default/content'
+
+tinymce.init({
+  selector: '#content',
+  plugins: [
+    'advlist',
+    'autolink',
+    'lists',
+    'link',
+    'image',
+    'charmap',
+    'preview',
+    'anchor',
+    'searchreplace',
+    'visualblocks',
+    'code',
+    'fullscreen',
+    'insertdatetime',
+    'media',
+    'table',
+    'help',
+    'wordcount',
+    'visualchars',
+  ],
+
+  toolbar:
+    'undo redo | formatselect | ' +
+    'bold italic backcolor | alignleft aligncenter ' +
+    'alignright alignjustify | bullist numlist outdent indent | ' +
+    'removeformat | image | help',
+  // Enable advanced image tools
+  image_advtab: true,
+  list_indent_on_tab: true, // Allow using Tab key to indent lists
+  // Configure image style options
+  style_formats: [
+    {
+      title: 'Headings',
+      items: [
+        { title: 'Heading 1', format: 'h1' },
+        { title: 'Heading 2', format: 'h2' },
+        { title: 'Heading 3', format: 'h3' },
+        { title: 'Heading 4', format: 'h4' },
+        { title: 'Heading 5', format: 'h5' },
+        { title: 'Heading 6', format: 'h6' },
+      ],
+    },
+    {
+      title: 'Inline',
+      items: [
+        { title: 'Bold', format: 'bold' },
+        { title: 'Italic', format: 'italic' },
+        { title: 'Underline', format: 'underline' },
+        { title: 'Strikethrough', format: 'strikethrough' },
+        { title: 'Superscript', format: 'superscript' },
+        { title: 'Subscript', format: 'subscript' },
+        { title: 'Code', format: 'code' },
+      ],
+    },
+    {
+      title: 'Blocks',
+      items: [
+        { title: 'Paragraph', format: 'p' },
+        { title: 'Blockquote', format: 'blockquote' },
+        { title: 'Div', format: 'div' },
+        { title: 'Pre', format: 'pre' },
+      ],
+    },
+    {
+      title: 'Align',
+      items: [
+        { title: 'Left', format: 'alignleft' },
+        { title: 'Center', format: 'aligncenter' },
+        { title: 'Right', format: 'alignright' },
+        { title: 'Justify', format: 'alignjustify' },
+      ],
+    },
+    {
+      title: 'Image Styles',
+      items: [
+        {
+          title: 'Left Aligned',
+          selector: ['img', 'div', 'p'],
+          styles: {
+            'float': 'left',
+            'margin': '0 10px 0 0',
+            'max-width': '50%',
+            'clear': 'both',
+          },
+        },
+        {
+          title: 'Right Aligned',
+          selector: ['img', 'div', 'p'],
+          styles: {
+            'float': 'right',
+            'margin': '0 0 0 10px',
+            'max-width': '50%',
+            'clear': 'both',
+          },
+        },
+        {
+          title: 'Default Aligned',
+          selector: ['img', 'div', 'p'],
+          styles: {
+            'float': 'none',
+            'margin': '0',
+            'max-width': '100%',
+          },
+        },
+      ],
+    },
+  ],
+  // basic style for content
+  content_style: `
+    .content-section {
+    }
+  `,
+  // setting image upload
+  images_upload_handler: function (blobInfo, progress) {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData()
+      formData.append('file', blobInfo.blob(), blobInfo.filename())
+
+      fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          resolve(result.location)
+        })
+        .catch((error) => {
+          reject('圖片上傳失敗: ' + error)
+        })
+    })
+  },
+})
+
 jQuery(document).ready(function ($) {
   'use strict'
 

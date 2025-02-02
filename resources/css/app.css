@@ -85,12 +85,12 @@ html {
 small{
    font-family: 'Karla', sans-serif;
 }
-ul,
+/* ul,
 li{
-    list-style: none;
+    list-style: disc;
     padding: 0;
     margin: 0;
-}
+} */
 a,
 a:hover{
     text-decoration: none;
