@@ -214,17 +214,27 @@ tinymce.init({
     return new Promise((resolve, reject) => {
       const formData = new FormData()
       formData.append('file', blobInfo.blob(), blobInfo.filename())
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 
-      fetch('/api/upload', {
+      fetch('/admin/files/upload', {
         method: 'POST',
         body: formData,
+        headers: {
+          'X-CSRF-TOKEN': csrfToken,
+        },
       })
         .then((response) => response.json())
         .then((result) => {
-          resolve(result.location)
+          if (result.location) {
+            resolve(result.location)
+          } else if (result.url) {
+            resolve(result.url)
+          } else {
+            reject('upload failed: invalid response format')
+          }
         })
         .catch((error) => {
-          reject('圖片上傳失敗: ' + error)
+          reject('upload failed: ' + error)
         })
     })
   },

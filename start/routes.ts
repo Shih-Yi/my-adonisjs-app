@@ -17,6 +17,7 @@ const AdminDashboardController = () => import('#controllers/admin/dashboard_cont
 const AdminPagesController = () => import('#controllers/admin/pages_controller')
 const AdminAuthController = () => import('#controllers/admin/auth_controller')
 const PagesController = () => import('#controllers/pages_controller')
+const UploadsController = () => import('#controllers/admin/uploads_controller')
 
 // Public routes (no authentication required)
 router.get('/', [HomeController, 'index'])
@@ -66,6 +67,8 @@ router
     router.put('/pages/:id', [AdminPagesController, 'update']).as('admin.pages.update')
     router.delete('/pages/:id', [AdminPagesController, 'destroy']).as('admin.pages.destroy')
     router.post('/pages/reorder', [AdminPagesController, 'reorder']).as('admin.pages.reorder')
+
+    router.post('/files/upload', [UploadsController, 'upload'])
   })
   .prefix('/admin')
   .middleware([middleware.auth({ guards: ['admin'] }), middleware.admin()])
