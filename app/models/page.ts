@@ -88,7 +88,11 @@ export default class Page extends BaseModel {
         .where('type', type)
         .whereNull('parent_id')
         .preload('children', (childrenQuery) => {
-          childrenQuery.preload('children')
+          childrenQuery
+            .preload('children', (grandchildrenQuery) => {
+              grandchildrenQuery.orderBy('order')
+            })
+            .orderBy('order')
         })
         .orderBy('order')
     }
