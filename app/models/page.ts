@@ -80,23 +80,21 @@ export default class Page extends BaseModel {
   /**
    * Get navigation structure for all page types
    */
-  static async getNavigation(): Promise<Record<PageType, Page[]>> {
-    const navigation: Partial<Record<PageType, Page[]>> = {}
+  static async getNavigation(): Promise<Page[]> {
+    // get all first level pages
+    const allFirstLevelPages = await this.query()
+      .whereNull('parent_id')
+      .preload('children', (childrenQuery) => {
+        childrenQuery
+          .preload('children', (grandchildrenQuery) => {
+            grandchildrenQuery.orderBy('order', 'asc')
+          })
+          .orderBy('order', 'asc')
+      })
+      .orderBy('order', 'asc')
 
-    for (const type of this.PAGE_TYPES) {
-      navigation[type] = await this.query()
-        .where('type', type)
-        .whereNull('parent_id')
-        .preload('children', (childrenQuery) => {
-          childrenQuery
-            .preload('children', (grandchildrenQuery) => {
-              grandchildrenQuery.orderBy('order')
-            })
-            .orderBy('order')
-        })
-        .orderBy('order')
-    }
-
-    return navigation as Record<PageType, Page[]>
+    const navigation = allFirstLevelPages.sort((a, b) => a.order - b.order)
+    // sort all first level pages by order
+    return navigation
   }
 }

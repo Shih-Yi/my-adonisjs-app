@@ -1,8 +1,9 @@
 <form method="POST" action="{{ formAction }}">
   {{ csrfField() }}
 
+  {{-- Title --}}
   <div class="mb-3">
-    <label for="title" class="form-label">Title</label>
+    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
     <input type="text"
            class="form-control"
            id="title"
@@ -11,37 +12,69 @@
            required>
   </div>
 
+  {{-- Type --}}
   <div class="mb-3">
-    <label for="type" class="form-label">Type</label>
-    <select class="form-select" id="type" name="type"
-      {{ page && page.parentId == null ? 'disabled' : '' }}
-      required>
-      @each(type in types)
-        <option value="{{ type }}" {{ page?.type === type ? 'selected' : '' }}>
-          {{ type }}
-        </option>
+    <label for="type" class="form-label">Type <span class="text-danger">*</span></label>
+    <select class="form-select"
+            id="type"
+            name="type"
+            {{ page && (page.parentId == null || page.children?.length > 0) ? 'disabled' : '' }}
+            required>
+      @if(!page)
+        @each(type in types)
+          <option value="{{ type }}">{{ type }}</option>
+        @end
+      @else
+        @if(page.parentId == null)
+          <option value="{{ page.type }}" selected>{{ page.type }}</option>
+        @else
+          @each(type in types)
+            <option value="{{ type }}" {{ page.type === type ? 'selected' : '' }}>
+              {{ type }}
+            </option>
+          @end
+        @end
       @end
     </select>
+    @if(page && page.parentId == null)
+      <div class="form-text text-muted">
+        Cannot change type because this is a first level page
+      </div>
+    @elseif(page && page.children?.length > 0)
+      <div class="form-text text-muted">
+        Cannot change type because this page has children
+      </div>
+    @end
   </div>
 
+  {{-- Parent --}}
   <div class="mb-3">
-    <label for="parentId" class="form-label">Parent Page</label>
+    <label for="parentId" class="form-label">Parent Page <span class="text-danger">*</span></label>
     <select class="form-select"
             id="parentId"
             name="parentId"
-            {{ page && page.parentId == null ? 'disabled' : '' }} required>
-      <option value="">No Parent</option>
-      @each(parentOption in parentPages)
-        <option value="{{ parentOption.id }}"
-          data-type="{{ parentOption.type }}"
-          {{ page?.parentId === parentOption.id ? 'selected' : '' }}>
-          {{ parentOption.title }}
-        </option>
+            {{ page && (page.parentId == null || page.children?.length > 0) ? 'disabled' : '' }}
+            required>
+      @if(page && page?.parentId == null)
+        <option value="">No Parent</option>
+      @end
+      @if(page?.parentId !== null)
+        @each(parentOption in parentPages)
+          <option value="{{ parentOption.id }}"
+            data-type="{{ parentOption.type }}"
+            {{ page?.parentId === parentOption.id ? 'selected' : '' }}>
+            {{ parentOption.title }}
+          </option>
+        @end
       @end
     </select>
-    @if(page && page.parentId == null )
+    @if(page && page.parentId == null)
       <div class="form-text text-muted">
-        Cannot change parent because this page is a root page
+        Cannot change parent because this is a first level page
+      </div>
+    @elseif(page && page.children?.length > 0)
+      <div class="form-text text-muted">
+        Cannot change parent because this page has children
       </div>
     @end
   </div>
@@ -78,13 +111,12 @@
 </form>
 
 <script>
-
-
   // Update parent page options when page type is selected
   document.getElementById('type').addEventListener('change', function() {
     const selectedType = this.value
     const parentSelect = document.getElementById('parentId')
     const options = parentSelect.querySelectorAll('option')
+    let firstMatchingOption = null
 
     options.forEach(option => {
       if (option.value === '') {
@@ -92,14 +124,24 @@
         option.style.display = ''
       } else {
         // Show only options with matching type
-        option.style.display = option.dataset.type === selectedType ? '' : 'none'
+        const matches = option.dataset.type === selectedType
+        option.style.display = matches ? '' : 'none'
+        // 記錄第一個符合的選項
+        if (matches && !firstMatchingOption) {
+          firstMatchingOption = option
+        }
       }
     })
 
-    // If current selected parent is not of the same type, reset to "No Parent"
+    // If current selected parent is not of the same type
     const currentSelected = parentSelect.selectedOptions[0]
     if (currentSelected && currentSelected.value !== '' && currentSelected.dataset.type !== selectedType) {
-      parentSelect.value = ''
+      // 如果有符合的選項就選擇第一個，否則選擇 "No Parent"
+      if (firstMatchingOption) {
+        parentSelect.value = firstMatchingOption.value
+      } else {
+        parentSelect.value = ''
+      }
     }
   })
 

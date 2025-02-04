@@ -20,10 +20,13 @@ export default class AdminPagesController {
 
     // Reorganize data at application layer
     const organizedPages = pages.sort((a, b) => {
-      if (a.type !== b.type) return a.type.localeCompare(b.type)
+      // if both are first level pages, sort by order
+      // if both have the same parent page, sort by order
       if (a.parentId === b.parentId) {
         return a.order - b.order
       }
+
+      // other cases sort by full path
       const aPath = this.getPagePath(a, pages)
       const bPath = this.getPagePath(b, pages)
       return aPath.localeCompare(bPath)
@@ -76,6 +79,7 @@ export default class AdminPagesController {
             Page.query().select('id').whereNull('parent_id') // Second level (children of first level)
           )
       })
+      .preload('children') // load children
       .orderBy('title')
 
     return view.render('admin/pages/create', {
@@ -117,6 +121,7 @@ export default class AdminPagesController {
           )
       })
       .whereNot('id', page.id)
+      .preload('children') // load children
       .orderBy('title')
 
     return view.render('admin/pages/edit', {
@@ -135,11 +140,23 @@ export default class AdminPagesController {
 
     const data = request.only(['title', 'type', 'content', 'parentId', 'isActive'])
 
-    // If page has children, don't allow changing parentId
+    // first level page can't change parentId and type
+    if (page.parentId === null && (data.parentId !== null || data.type !== page.type)) {
+      return response
+        .status(422)
+        .send({ error: 'Cannot change parent or type of a first level page' })
+    }
+
+    // second and third level page can't set to first level page
+    if (page.parentId !== null && data.parentId === '') {
+      return response.status(422).send({ error: 'Cannot change child page to first level page' })
+    }
+
+    // if page has children, can't change parentId
     if (page.children.length > 0 && Number.parseInt(data.parentId, 10) !== page.parentId) {
       return response
         .status(422)
-        .send({ error: 'Cannot change parent of a page that has children' })
+        .send({ error: 'Cannot change parent of a page that has children!' })
     }
 
     // Convert empty string to null for parentId
@@ -154,14 +171,21 @@ export default class AdminPagesController {
   /**
    * Delete page
    */
-  async destroy({ params, response, request }: HttpContext) {
-    console.log('Method:', request.method())
-    console.log('URL:', request.url())
-    console.log('Params:', params)
-
+  async destroy({ params, response }: HttpContext) {
     const page = await Page.findOrFail(params.id)
-    await page.delete()
+    await page.load('children') // load children
 
+    // check if it's a first level page
+    if (page.parentId === null) {
+      return response.status(422).send({ error: 'Cannot delete first level page' })
+    }
+
+    // check if it has children
+    if (page.children.length > 0) {
+      return response.status(422).send({ error: 'Cannot delete page that has children' })
+    }
+
+    await page.delete()
     return response.redirect().toRoute('admin.pages.index')
   }
 

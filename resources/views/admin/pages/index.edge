@@ -46,7 +46,7 @@
                     <td>
                       <span class="badge bg-secondary">{{ page.type }}</span>
                     </td>
-                    <td>{{ page.slug }}</td>
+                    <td>{{ page.id }}-{{ page.slug }}</td>
                     <td>{{ page.order }}</td>
                     <td>
                       @if(page.isActive)
@@ -68,11 +68,16 @@
                               class="d-inline">
                           {{ csrfField() }}
                           {{-- 使用 _method 欄位模擬 DELETE 請求 --}}
-
+                        @if(page.parentId !== null && !page.children?.length)
                           <button type="submit" class="btn btn-sm btn-outline-danger">
                             <i class="fas fa-trash"></i>
                           </button>
-                        </form>
+                        @else
+                          <button type="submit" class="btn btn-sm btn-outline-danger" disabled>
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        @end
+                      </form>
                       </div>
                     </td>
                   </tr>
