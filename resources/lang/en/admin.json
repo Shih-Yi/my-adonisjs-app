@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "welcome": "Welcome",
+    "logout": "Logout",
+    "language": {
+      "en": "English",
+      "zh-TW": "中文"
+    }
+  }
+}
