@@ -8,8 +8,11 @@
   @vite(['resources/js/admin/admin-app.js'])
 </head>
 <body>
-  @include('partials/admin/admin-nav')
-  @include('partials/admin/admin-sidebar')
-  {{{ await $slots.main() }}}
+  <div class="wrapper">
+    @include('partials/admin/admin-nav')
+    @include('partials/admin/admin-sidebar')
+    {{{ await $slots.main() }}}
+    @include('partials/admin/admin-footer')
+  </div>
 </body>
 </html>

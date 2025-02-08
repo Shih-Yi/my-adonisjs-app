@@ -1,5 +1,5 @@
 @layout.admin()
-  <div class="wrapper">
+
   <div class="content-wrapper px-4 py-2">
     <div class="row">
       <div class="col-md-12 mb-4">
@@ -21,7 +21,7 @@
           <div class="card-body">
             <h5 class="card-title">Pages</h5>
             <p class="card-text">Manage Pages</p>
-            <a href="/admin/pages" class="btn btn-primary">View Pages</a>
+            <a href="{{ route('admin.pages.index') }}" class="btn btn-primary">View Pages</a>
           </div>
         </div>
       </div>
@@ -37,5 +37,5 @@
       </div>
     </div>
   </div>
-</div>
+
 @end
