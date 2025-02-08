@@ -94,9 +94,36 @@ export default class AdminPagesController {
    */
   async store({ request, response }: HttpContext) {
     const data = request.only(['title', 'type', 'content', 'parentId', 'isActive'])
+    data.isActive = !!data.isActive // 'on' -> true, undefined -> false
+
+    // 檢查父頁面是否存在且是合法的父頁面
+    if (data.parentId) {
+      const parentPage = await Page.query()
+        .where('id', data.parentId)
+        .where((query) => {
+          query
+            .whereNull('parent_id') // 第一層
+            .orWhereIn(
+              'parent_id',
+              Page.query().select('id').whereNull('parent_id') // 第二層
+            )
+        })
+        .first()
+
+      if (!parentPage) {
+        return response.status(422).send({
+          error: 'Invalid parent page. Can only select first or second level page as parent.',
+        })
+      }
+
+      // 檢查父頁面的類型是否匹配
+      if (parentPage.type !== data.type) {
+        return response.status(422).send({ error: 'Parent page type does not match' })
+      }
+    }
 
     // Convert empty string to null for parentId
-    if (data.parentId === '') {
+    if (data.parentId === '' || data.parentId === undefined) {
       data.parentId = null
     }
 
@@ -105,11 +132,13 @@ export default class AdminPagesController {
 
     // 創建每個語言版本
     for (const [locale, content] of Object.entries(translations)) {
-      await PageTranslation.create({
-        pageId: page.id,
-        locale,
-        content: content as string,
-      })
+      if (content) {
+        await PageTranslation.create({
+          pageId: page.id,
+          locale,
+          content: content as string,
+        })
+      }
     }
 
     return response.redirect().toRoute('admin.pages.index')
@@ -151,6 +180,17 @@ export default class AdminPagesController {
     await page.load('children') // Load children to check
 
     const data = request.only(['title', 'type', 'content', 'parentId', 'isActive'])
+    data.isActive = !!data.isActive // 'on' -> true, undefined -> false
+
+    if (data.parentId === '' || data.parentId === undefined || data.parentId === null) {
+      data.parentId = null
+    }
+
+    // For first level pages: ignore submitted type and use original value
+    if (page.parentId === null) {
+      data.type = page.type // Force use original type
+      data.parentId = null // Force keep as null
+    }
 
     // first level page can't change parentId and type
     if (page.parentId === null && (data.parentId !== null || data.type !== page.type)) {
@@ -159,13 +199,38 @@ export default class AdminPagesController {
         .send({ error: 'Cannot change parent or type of a first level page' })
     }
 
-    // second and third level page can't set to first level page
-    if (page.parentId !== null && data.parentId === '') {
-      return response.status(422).send({ error: 'Cannot change child page to first level page' })
+    // 如果要修改父頁面，檢查新的父頁面是否合法
+    if (page.parentId !== null && data.parentId && data.parentId !== page.parentId) {
+      const parentPage = await Page.query()
+        .where('id', data.parentId)
+        .where((query) => {
+          query
+            .whereNull('parent_id') // 第一層
+            .orWhereIn(
+              'parent_id',
+              Page.query().select('id').whereNull('parent_id') // 第二層
+            )
+        })
+        .first()
+
+      if (!parentPage) {
+        return response.status(422).send({
+          error: 'Invalid parent page. Can only select first or second level page as parent.',
+        })
+      }
+
+      // 檢查父頁面的類型是否匹配
+      if (parentPage.type !== data.type) {
+        return response.status(422).send({ error: 'Parent page type does not match' })
+      }
     }
 
     // if page has children, can't change parentId
-    if (page.children.length > 0 && Number.parseInt(data.parentId, 10) !== page.parentId) {
+    if (
+      page.children.length > 0 &&
+      page.parentId !== null &&
+      Number.parseInt(data.parentId, 10) !== page.parentId
+    ) {
       return response
         .status(422)
         .send({ error: 'Cannot change parent of a page that has children!' })
@@ -181,10 +246,12 @@ export default class AdminPagesController {
 
     // 更新每個語言版本
     for (const [locale, content] of Object.entries(translations)) {
-      await PageTranslation.updateOrCreate(
-        { pageId: page.id, locale },
-        { content: content as string }
-      )
+      if (content) {
+        await PageTranslation.updateOrCreate(
+          { pageId: page.id, locale },
+          { content: content as string }
+        )
+      }
     }
 
     await page.merge(data).save()
