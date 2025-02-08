@@ -1,6 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Page from '#models/page'
 import db from '@adonisjs/lucid/services/db'
+import PageTranslation from '#models/page_translation'
 // import { sanitizeHtml } from '#services/html_sanitizer'
 
 export default class AdminPagesController {
@@ -99,7 +100,18 @@ export default class AdminPagesController {
       data.parentId = null
     }
 
-    await Page.create(data)
+    const page = await Page.create(data)
+    const translations = request.input('translations', {})
+
+    // 創建每個語言版本
+    for (const [locale, content] of Object.entries(translations)) {
+      await PageTranslation.create({
+        pageId: page.id,
+        locale,
+        content: content as string,
+      })
+    }
+
     return response.redirect().toRoute('admin.pages.index')
   }
 
@@ -162,6 +174,17 @@ export default class AdminPagesController {
     // Convert empty string to null for parentId
     if (data.parentId === '') {
       data.parentId = null
+    }
+
+    // 處理翻譯
+    const translations = request.input('translations', {})
+
+    // 更新每個語言版本
+    for (const [locale, content] of Object.entries(translations)) {
+      await PageTranslation.updateOrCreate(
+        { pageId: page.id, locale },
+        { content: content as string }
+      )
     }
 
     await page.merge(data).save()

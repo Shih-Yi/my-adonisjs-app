@@ -9,6 +9,7 @@ import {
 } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import string from '@adonisjs/core/helpers/string'
+import PageTranslation from './page_translation.js'
 
 // Define PageType outside the class
 const PAGE_TYPE_VALUES = ['about', 'im_new', 'whats_on', 'connect', 'library'] as const
@@ -60,6 +61,9 @@ export default class Page extends BaseModel {
   @hasMany(() => Page, { foreignKey: 'parentId' })
   declare children: HasMany<typeof Page>
 
+  @hasMany(() => PageTranslation)
+  declare translations: HasMany<typeof PageTranslation>
+
   @beforeSave()
   public static async generateSlug(page: Page) {
     if (page.title && !page.slug) {
@@ -96,5 +100,10 @@ export default class Page extends BaseModel {
     const navigation = allFirstLevelPages.sort((a, b) => a.order - b.order)
     // sort all first level pages by order
     return navigation
+  }
+
+  // 方便取得特定語言的翻譯
+  async getTranslation(locale: string) {
+    return await PageTranslation.query().where('page_id', this.id).where('locale', locale).first()
   }
 }

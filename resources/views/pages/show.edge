@@ -42,7 +42,8 @@
             @if(customTemplate)
               @include(customTemplate)
             @else
-              {{{ page.content }}}
+              {{-- 獲取當前語言的內容，如果沒有則顯示英文版 --}}
+              {{{ (await page.getTranslation(i18n.locale))?.content || (await page.getTranslation('en'))?.content }}}
             @end
 
 					</div>
