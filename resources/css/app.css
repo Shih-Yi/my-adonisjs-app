@@ -6135,9 +6135,13 @@ border-color: #b1712a;
 	fill: #b1712a;
 }
 
+ul {
+  margin-bottom: 0;
+}
+
 /* Logo styles */
-.desktop-nav .logo img {
-  max-width: 90px;  /* Limit maximum width */
+.logo {
+  max-width: 85px;  /* Limit maximum width */
   height: auto;      /* Maintain image aspect ratio */
   object-fit: contain; /* Ensure full image display */
 }
