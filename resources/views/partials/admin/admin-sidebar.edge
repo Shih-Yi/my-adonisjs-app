@@ -56,22 +56,23 @@
             </li>
           </ul>
         </li> -->
+        <li class="nav-item">
+          <a href="{{ route('admin.dashboard') }}" class="nav-link treeview-link">
+            <i class="nav-icon fas fa-home"></i>
+            <p>
+              Dashboard
+            </p>
+          </a>
+        </li>
         <li class="nav-item has-treeview">
           <a href="{{ route('admin.pages.index') }}" class="nav-link treeview-link">
-            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <i class="nav-icon fas fa-file-alt"></i>
             <p>
               Pages
             </p>
           </a>
         </li>
-        <!-- <li class="nav-item has-treeview">
-          <a href="<%= admin_my_story_path %>" class="nav-link treeview-link">
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-            <p>
-              About Us
-            </p>
-          </a>
-        </li> -->
+
         <!-- Nested Link -->
         <!-- <li class="nav-item has-treeview">
           <a href="<%= admin_my_story_path %>" class="nav-link treeview-link">

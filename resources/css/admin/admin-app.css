@@ -43,15 +43,3 @@ body {
 .brand-link:hover {
   text-decoration: none;
 }
-
-/* Sidebar collapse transition */
-.sidebar-mini.sidebar-collapse .main-sidebar {
-  transition: width .3s ease-in-out;
-}
-
-/* Ensure sidebar toggle works on mobile */
-@media (max-width: 992px) {
-  .sidebar-open .main-sidebar {
-    transform: translateX(0);
-  }
-}
