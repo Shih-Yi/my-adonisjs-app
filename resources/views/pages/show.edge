@@ -7,7 +7,7 @@
           <header class="mb-4">
             <h1>{{ page.title }}</h1>
           </header>
-
+    
           <div class="content">
             @if(customTemplate)
               @include(customTemplate)
@@ -17,117 +17,118 @@
           </div>
         </article>
       </div>
-
-
+    
+    
     </div> --}}
 
-
     <div class="page-content-wrapper">
-      	<section class="gap blog-detail">
+      <section class="gap blog-detail">
 
-		<div class="container">
+        <div class="container">
 
-			<div class="row">
+          <div class="row">
 
-				<div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="col-lg-8 col-md-12 col-sm-12">
 
-					<div class="blog-meta">
+              <div class="blog-meta">
 
-						<h2>{{ page.title }}</h2>
+                <h2>
+                  {{ page.title }}
+                </h2>
 
-					</div>
+              </div>
 
-					<div class="content">
+              <div class="content">
 
-            @if(customTemplate)
-              @include(customTemplate)
-            @else
-              {{-- 獲取當前語言的內容，如果沒有則顯示英文版 --}}
-              {{{ (await page.getTranslation(i18n.locale))?.content || (await page.getTranslation('en'))?.content }}}
-            @end
+                @if(customTemplate)
+                  @include(customTemplate)
+                @else
+                  {{{ (await page.getTranslation(i18n.locale))?.content || (await page.getTranslation('en'))?.content || '' }}}
+                @end
+                
+              </div>
 
-					</div>
+            </div>
 
+            <div class="col-lg-4 col-md-12 col-sm-12">
 
+              <aside>
 
+                <div class="blog-sidebar">
 
+                  <div class="widget widget-recent-articles">
 
+                    <h3>
+                      Recent Articles
+                    </h3>
 
-				</div>
+                    <ul>
 
-				<div class="col-lg-4 col-md-12 col-sm-12">
+                      <li class="d-flex align-items-center">
 
-					<aside>
+                        <img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image" />
 
-						<div class="blog-sidebar">
+                        <div>
 
-							<div class="widget widget-recent-articles">
+                          <p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">
+                            21 dec, 2021
+                          </p>
 
-								<h3>Recent Articles</h3>
+                          <a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
 
-								<ul>
+                        </div>
 
-									<li class="d-flex align-items-center">
+                      </li>
 
-										<img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image">
+                      <li class="d-flex align-items-center">
 
-										<div>
+                        <img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image One" />
 
-											<p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">21 dec, 2021</p>
+                        <div>
 
-											<a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
+                          <p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">
+                            21 dec, 2021
+                          </p>
 
-										</div>
+                          <a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
 
-									</li>
+                        </div>
 
-									<li class="d-flex align-items-center">
+                      </li>
 
-										<img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image One">
+                      <li class="d-flex align-items-center">
 
-										<div>
+                        <img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image Two" />
 
-											<p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">21 dec, 2021</p>
+                        <div>
 
-											<a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
+                          <p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">
+                            21 dec, 2021
+                          </p>
 
-										</div>
+                          <a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
 
-									</li>
+                        </div>
 
-									<li class="d-flex align-items-center">
+                      </li>
 
-										<img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image Two">
+                    </ul>
 
-										<div>
+                  </div>
 
-											<p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">21 dec, 2021</p>
+                </div>
 
-											<a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
+              </aside>
 
-										</div>
+            </div>
 
-									</li>
+          </div>
 
-								</ul>
+        </div>
 
-							</div>
-
-
-						</div>
-
-					</aside>
-
-				</div>
-
-			</div>
-
-		</div>
-
-	</section>
+      </section>
     </div>
 
-
   @end
-
+  
 @end

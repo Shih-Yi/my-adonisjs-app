@@ -6201,3 +6201,55 @@ ul {
 .page-content-wrapper {
   min-height: calc(100vh - 160px); /* Viewport height minus header height */
 }
+
+.top-bar .dropdown-toggle {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.top-bar .dropdown-toggle::after {
+  display: none;  /* 移除預設的下拉箭頭 */
+}
+
+.top-bar .dropdown-toggle .fa-chevron-down {
+  font-size: 0.8rem;  /* 調整箭頭大小 */
+  transition: transform 0.2s;  /* 添加旋轉動畫 */
+}
+
+.top-bar .dropdown.show .dropdown-toggle .fa-chevron-down {
+  transform: rotate(180deg);  /* 點擊時箭頭旋轉 */
+}
+
+.top-bar .dropdown-menu {
+  display: none;  /* 預設隱藏 */
+  min-width: 150px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  background: #fff;
+  border: none;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.top-bar .dropdown-menu.show {
+  display: block;  /* 只有在 show class 時才顯示 */
+}
+
+.top-bar .dropdown-item {
+  color: #333;
+  padding: 0.5rem 1rem;
+}
+
+.top-bar .dropdown-item:hover,
+.top-bar .dropdown-item:focus {
+  background-color: #f8f9fa;
+}
+
+.top-bar .dropdown-item.active {
+  background-color: #f8f9fa;
+  color: #333;
+}
