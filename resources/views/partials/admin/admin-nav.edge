@@ -17,10 +17,13 @@
       </a>
       <div class="dropdown-menu dropdown-menu-end">
         <a href="{{ route('language', { locale: 'en' }) }}" class="dropdown-item">
-          <i class="flag-icon flag-icon-us me-2"></i> {{ t('admin.nav.language.en') }}
+          <i class="flag-icon flag-icon-us me-2"></i>{{ t('admin.nav.language.en') }}
         </a>
         <a href="{{ route('language', { locale: 'zh-TW' }) }}" class="dropdown-item">
-          <i class="flag-icon flag-icon-tw me-2"></i> {{ t('admin.nav.language.zh-TW') }}
+          <i class="flag-icon flag-icon-tw me-2"></i>{{ t('admin.nav.language.zh-TW') }}
+        </a>
+        <a href="{{ route('language', { locale: 'zh-CN' }) }}" class="dropdown-item">
+          <i class="flag-icon flag-icon-cn me-2"></i>{{ t('admin.nav.language.zh-CN') }}
         </a>
       </div>
     </li>

@@ -4,7 +4,8 @@
     "logout": "Logout",
     "language": {
       "en": "English",
-      "zh-TW": "中文"
+      "zh-TW": "繁體中文",
+      "zh-CN": "简体中文"
     }
   }
 }

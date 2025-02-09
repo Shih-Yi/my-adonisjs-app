@@ -3,7 +3,7 @@ import { defineConfig, formatters, loaders } from '@adonisjs/i18n'
 
 export default defineConfig({
   defaultLocale: 'en',
-  supportedLocales: ['zh-TW', 'en'],
+  supportedLocales: ['en', 'zh-TW', 'zh-CN'],
   formatter: formatters.icu(),
 
   loaders: [
