@@ -20,7 +20,7 @@ const PagesController = () => import('#controllers/pages_controller')
 const UploadsController = () => import('#controllers/admin/uploads_controller')
 
 // Public routes (no authentication required)
-router.get('/', [HomeController, 'index'])
+router.get('/', [HomeController, 'index']).as('home')
 router.get('/posts', [PostsController, 'index']).as('posts.index')
 router.post('/posts', [PostsController, 'store'])
 
