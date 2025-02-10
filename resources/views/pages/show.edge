@@ -33,7 +33,7 @@
               <div class="blog-meta">
 
                 <h2>
-                  {{ page.title }}
+                  {{ (await page.getTranslation(i18n.locale))?.title || (await page.getTranslation('en'))?.title }}
                 </h2>
 
               </div>
@@ -43,7 +43,7 @@
                 @if(customTemplate)
                   @include(customTemplate)
                 @else
-                  {{{ (await page.getTranslation(i18n.locale))?.content || (await page.getTranslation('en'))?.content || '' }}}
+                  {{{ (await page.getTranslation(i18n.locale))?.content || (await page.getTranslation('en'))?.content }}}
                 @end
                 
               </div>

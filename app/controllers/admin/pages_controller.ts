@@ -4,6 +4,11 @@ import db from '@adonisjs/lucid/services/db'
 import PageTranslation from '#models/page_translation'
 // import { sanitizeHtml } from '#services/html_sanitizer'
 
+interface Translation {
+  title?: string
+  content?: string
+}
+
 export default class AdminPagesController {
   /**
    * Display a listing of pages
@@ -56,7 +61,7 @@ export default class AdminPagesController {
    * Display page details
    */
   async show({ params, view }: HttpContext) {
-    const page = await Page.findOrFail(params.id)
+    const page = await Page.query().preload('translations').where('id', params.id).firstOrFail()
 
     // If there is a parent page, preload it
     if (page.parentId) {
@@ -130,13 +135,14 @@ export default class AdminPagesController {
     const page = await Page.create(data)
     const translations = request.input('translations', {})
 
-    // 創建每個語言版本
-    for (const [locale, content] of Object.entries(translations)) {
-      if (content) {
+    // 儲存每個語言版本
+    for (const [locale, translation] of Object.entries(translations) as [string, Translation][]) {
+      if (translation) {
         await PageTranslation.create({
           pageId: page.id,
           locale,
-          content: content as string,
+          title: translation.title || '',
+          content: translation.content || '',
         })
       }
     }
@@ -148,8 +154,11 @@ export default class AdminPagesController {
    * Show the form for editing a page
    */
   async edit({ params, view }: HttpContext) {
-    const page = await Page.findOrFail(params.id)
-    await page.load('children') // Load children for view
+    const page = await Page.query()
+      .preload('children')
+      .preload('translations')
+      .where('id', params.id)
+      .firstOrFail()
 
     // Get first and second level pages only, excluding current page
     const parentPages = await Page.query()
@@ -162,7 +171,7 @@ export default class AdminPagesController {
           )
       })
       .whereNot('id', page.id)
-      .preload('children') // load children
+      .preload('children')
       .orderBy('title')
 
     return view.render('admin/pages/edit', {
@@ -245,11 +254,14 @@ export default class AdminPagesController {
     const translations = request.input('translations', {})
 
     // 更新每個語言版本
-    for (const [locale, content] of Object.entries(translations)) {
-      if (content) {
+    for (const [locale, translation] of Object.entries(translations) as [string, Translation][]) {
+      if (translation) {
         await PageTranslation.updateOrCreate(
           { pageId: page.id, locale },
-          { content: content as string }
+          {
+            title: translation.title || '',
+            content: translation.content || '',
+          }
         )
       }
     }

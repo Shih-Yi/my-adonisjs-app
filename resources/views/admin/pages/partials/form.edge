@@ -1,16 +1,75 @@
 <form method="POST" action="{{ formAction }}">
   {{ csrfField() }}
   {{-- Title --}}
-  <div class="mb-3">
-    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-    <input
-      type="text"
-      class="form-control"
-      id="title"
-      name="title"
-      value="{{ page?.title || '' }}"
-      required
-    />
+  <div class="row">
+    <div class="col-12">
+      <h5>
+        Title
+      </h5>
+      <div class="border rounded p-3 bg-light">
+        <div class="form-group">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="title-en-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#title-en"
+                type="button"
+                role="tab"
+              >English</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="title-zh-tw-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#title-zh-tw"
+                type="button"
+                role="tab"
+              >繁體中文</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="title-zh-cn-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#title-zh-cn"
+                type="button"
+                role="tab"
+              >简体中文</button>
+            </li>
+          </ul>
+
+          <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="title-en" role="tabpanel">
+              <input
+                type="text"
+                name="translations[en][title]"
+                class="form-control"
+                value="{{ page?.translations?.find(t => t.locale === 'en')?.title || '' }}"
+              />
+            </div>
+            <div class="tab-pane fade" id="title-zh-tw" role="tabpanel">
+              <input
+                type="text"
+                name="translations[zh-TW][title]"
+                class="form-control"
+                value="{{ page?.translations?.find(t => t.locale === 'zh-TW')?.title || '' }}"
+              />
+            </div>
+            <div class="tab-pane fade" id="title-zh-cn" role="tabpanel">
+              <input
+                type="text"
+                name="translations[zh-CN][title]"
+                class="form-control"
+                value="{{ page?.translations?.find(t => t.locale === 'zh-CN')?.title || '' }}"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   {{-- Type --}}
@@ -95,6 +154,7 @@
     @end
   </div>
 
+  {{-- Content --}}
   <div class="row">
     <div class="col-12">
       <h5>
@@ -142,14 +202,14 @@
           </ul>
 
           <div class="tab-content mt-3">
-            <div class="tab-pane fade show active" id="content-en" role="tabpanel" aria-labelledby="en-tab">
-              <textarea name="translations[en]" class="form-control editor" rows="10">{{ await page?.getTranslation('en').then(t => t?.content) || '' }}</textarea>
+            <div class="tab-pane fade show active" id="content-en" role="tabpanel">
+              <textarea name="translations[en][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'en')?.content || '' }}</textarea>
             </div>
             <div class="tab-pane fade" id="content-zh-tw" role="tabpanel" aria-labelledby="zh-tw-tab">
-              <textarea name="translations[zh-TW]" class="form-control editor" rows="10">{{ await page?.getTranslation('zh-TW').then(t => t?.content) || '' }}</textarea>
+              <textarea name="translations[zh-TW][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-TW')?.content || '' }}</textarea>
             </div>
             <div class="tab-pane fade" id="content-zh-cn" role="tabpanel" aria-labelledby="zh-cn-tab">
-              <textarea name="translations[zh-CN]" class="form-control editor" rows="10">{{ await page?.getTranslation('zh-CN').then(t => t?.content) || '' }}</textarea>
+              <textarea name="translations[zh-CN][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-CN')?.content || '' }}</textarea>
             </div>
           </div>
         </div>

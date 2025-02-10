@@ -14,6 +14,9 @@ export default class PageTranslation extends BaseModel {
   declare locale: string
 
   @column()
+  declare title: string
+
+  @column()
   declare content: string
 
   @column.dateTime({ autoCreate: true })
