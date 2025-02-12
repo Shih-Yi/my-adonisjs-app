@@ -8,7 +8,6 @@ import {
   beforeCreate,
 } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import string from '@adonisjs/core/helpers/string'
 import PageTranslation from './page_translation.js'
 
 // Define PageType outside the class
@@ -28,13 +27,7 @@ export default class Page extends BaseModel {
   declare type: PageType
 
   @column()
-  declare title: string
-
-  @column()
   declare slug: string
-
-  @column()
-  declare content: string | null
 
   @column()
   declare order: number
@@ -64,15 +57,6 @@ export default class Page extends BaseModel {
   @hasMany(() => PageTranslation)
   declare translations: HasMany<typeof PageTranslation>
 
-  @beforeSave()
-  public static async generateSlug(page: Page) {
-    if (page.title && !page.slug) {
-      // Convert title to slug format
-      // "About Our Church" -> "about-our-church"
-      page.slug = string.dashCase(page.title)
-    }
-  }
-
   @beforeCreate()
   public static async setOrder(page: Page) {
     const count = await Page.query().count('*').first()
@@ -88,10 +72,12 @@ export default class Page extends BaseModel {
     // get all first level pages
     const allFirstLevelPages = await this.query()
       .whereNull('parent_id')
+      .preload('translations')
       .preload('children', (childrenQuery) => {
         childrenQuery
+          .preload('translations')
           .preload('children', (grandchildrenQuery) => {
-            grandchildrenQuery.orderBy('order', 'asc')
+            grandchildrenQuery.preload('translations').orderBy('order', 'asc')
           })
           .orderBy('order', 'asc')
       })

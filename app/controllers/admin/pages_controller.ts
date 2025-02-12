@@ -2,6 +2,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import Page from '#models/page'
 import db from '@adonisjs/lucid/services/db'
 import PageTranslation from '#models/page_translation'
+import string from '@adonisjs/core/helpers/string'
 // import { sanitizeHtml } from '#services/html_sanitizer'
 
 interface Translation {
@@ -18,6 +19,7 @@ export default class AdminPagesController {
 
     const pages = await Page.query()
       .preload('parent')
+      .preload('translations')
       .orderBy([
         { column: 'type', order: 'asc' },
         { column: 'parent_id', order: 'asc', nulls: 'first' },
@@ -85,8 +87,8 @@ export default class AdminPagesController {
             Page.query().select('id').whereNull('parent_id') // Second level (children of first level)
           )
       })
+      .preload('translations') // load translations
       .preload('children') // load children
-      .orderBy('title')
 
     return view.render('admin/pages/create', {
       types: Page.PAGE_TYPES,
@@ -98,8 +100,19 @@ export default class AdminPagesController {
    * Store a new page
    */
   async store({ request, response }: HttpContext) {
-    const data = request.only(['title', 'type', 'content', 'parentId', 'isActive'])
-    data.isActive = !!data.isActive // 'on' -> true, undefined -> false
+    const data = request.only(['type', 'parentId', 'isActive', 'slug'])
+    const translations = request.input('translations', {})
+
+    // 檢查英文標題是否存在
+    if (!translations.en?.title?.trim()) {
+      return response.status(422).send({
+        error: 'English title is required',
+      })
+    }
+    data.slug = string.dashCase(translations.en.title)
+
+    // 'on' -> true, undefined -> false
+    data.isActive = !!data.isActive
 
     // 檢查父頁面是否存在且是合法的父頁面
     if (data.parentId) {
@@ -133,7 +146,6 @@ export default class AdminPagesController {
     }
 
     const page = await Page.create(data)
-    const translations = request.input('translations', {})
 
     // 儲存每個語言版本
     for (const [locale, translation] of Object.entries(translations) as [string, Translation][]) {
@@ -141,7 +153,7 @@ export default class AdminPagesController {
         await PageTranslation.create({
           pageId: page.id,
           locale,
-          title: translation.title || '',
+          title: translation.title || '', // 英文已經檢查過了，其他語言可以是空字串
           content: translation.content || '',
         })
       }
@@ -171,8 +183,9 @@ export default class AdminPagesController {
           )
       })
       .whereNot('id', page.id)
-      .preload('children')
-      .orderBy('title')
+      .where('type', page.type)
+      .preload('translations')
+      .preload('children') // load children
 
     return view.render('admin/pages/edit', {
       page,
@@ -185,10 +198,20 @@ export default class AdminPagesController {
    * Update page
    */
   async update({ request, response, params }: HttpContext) {
-    const page = await Page.findOrFail(params.id)
-    await page.load('children') // Load children to check
+    const data = request.only(['type', 'parentId', 'isActive'])
+    const translations = request.input('translations', {})
+    console.log('translations', translations)
+    console.log('data.parentId', data.parentId)
+    // 檢查英文標題是否存在
+    if (!translations.en?.title?.trim()) {
+      return response.status(422).send({
+        error: 'English title is required',
+      })
+    }
 
-    const data = request.only(['title', 'type', 'content', 'parentId', 'isActive'])
+    const page = await Page.findOrFail(params.id)
+    await page.load('children')
+
     data.isActive = !!data.isActive // 'on' -> true, undefined -> false
 
     if (data.parentId === '' || data.parentId === undefined || data.parentId === null) {
@@ -199,6 +222,11 @@ export default class AdminPagesController {
     if (page.parentId === null) {
       data.type = page.type // Force use original type
       data.parentId = null // Force keep as null
+    }
+
+    if (page.children?.length > 0) {
+      data.type = page.type // Force use original type
+      data.parentId = page.parentId // Force keep as original parentId
     }
 
     // first level page can't change parentId and type
@@ -233,7 +261,9 @@ export default class AdminPagesController {
         return response.status(422).send({ error: 'Parent page type does not match' })
       }
     }
-
+    console.log('page.children.length', page.children.length)
+    console.log('Page parentId', page.parentId)
+    console.log('data.parentId', data.parentId)
     // if page has children, can't change parentId
     if (
       page.children.length > 0 &&
@@ -250,10 +280,7 @@ export default class AdminPagesController {
       data.parentId = null
     }
 
-    // 處理翻譯
-    const translations = request.input('translations', {})
-
-    // 更新每個語言版本
+    // 更新翻譯
     for (const [locale, translation] of Object.entries(translations) as [string, Translation][]) {
       if (translation) {
         await PageTranslation.updateOrCreate(
