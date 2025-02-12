@@ -6253,3 +6253,19 @@ ul {
   background-color: #f8f9fa;
   color: #333;
 }
+
+
+/* 限制內容區域的圖片大小 */
+.content img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block; /* 讓圖片獨占一行 */
+  margin: 1rem 0; /* 上下間距 */
+}
+
+/* 如果需要讓圖片置中 */
+.content img.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+

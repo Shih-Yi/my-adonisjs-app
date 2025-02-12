@@ -2,12 +2,14 @@
   @slot('main')
     <div class="content-wrapper px-4 py-2">
       <div class="container-fluid px-4">
-        <h1 class="mt-4">Pages</h1>
+        <h1 class="mt-4">
+          Pages
+        </h1>
 
         {{-- 頁面操作按鈕 --}}
         <div class="mb-4">
           <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Create New Page
+            <i class="fas fa-plus"></i>Create New Page
           </a>
         </div>
 
@@ -18,14 +20,29 @@
               <table class="table table-striped" id="pages-table">
                 <thead>
                   <tr>
-                    <th style="width: 50px"></th>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Slug</th>
-                    <th>Order</th>
-                    <th>Status</th>
-                    <th>Created</th>
-                    <th>Actions</th>
+                    <th style="width: 50px">
+                    </th>
+                    <th>
+                      Title
+                    </th>
+                    <th>
+                      Type
+                    </th>
+                    <th>
+                      Slug
+                    </th>
+                    <th>
+                      Order
+                    </th>
+                    <th>
+                      Status
+                    </th>
+                    <th>
+                      Created
+                    </th>
+                    <th>
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody class="sortable">
@@ -42,13 +59,17 @@
                             <span class="ms-3">↳</span>
                           @end
                         @end
-                        {{ page.title }}
+                        {{ page.translations?.find(t => t.locale === 'en')?.title || '' }}
                       </td>
                       <td>
                         <span class="badge bg-secondary">{{ page.type }}</span>
                       </td>
-                      <td>{{ page.id }}-{{ page.slug }}</td>
-                      <td>{{ page.order }}</td>
+                      <td>
+                        {{ page.id }}-{{ page.slug }}
+                      </td>
+                      <td>
+                        {{ page.order }}
+                      </td>
                       <td>
                         @if(page.isActive)
                           <span class="badge bg-success">Active</span>
@@ -56,29 +77,32 @@
                           <span class="badge bg-danger">Inactive</span>
                         @end
                       </td>
-                      <td>{{ page.createdAt.toFormat('yyyy-MM-dd') }}</td>
+                      <td>
+                        {{ page.createdAt.toFormat('yyyy-MM-dd') }}
+                      </td>
                       <td>
                         <div class="btn-group">
-                          <a href="{{ route('admin.pages.edit', [page.id]) }}"
-                            class="btn btn-sm btn-outline-primary">
+                          <a href="{{ route('admin.pages.edit', [page.id]) }}" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-edit"></i>
                           </a>
-                          <form action="{{ route('admin.pages.destroy', [page.id], { qs: { _method: 'DELETE'}}) }}"
-                                method="POST"
-                                onsubmit="return confirm('Are you sure?')"
-                                class="d-inline">
+                          <form
+                            action="{{ route('admin.pages.destroy', [page.id], { qs: { _method: 'DELETE' }}) }}"
+                            method="POST"
+                            onsubmit="return confirm('Are you sure?')"
+                            class="d-inline"
+                          >
                             {{ csrfField() }}
                             {{-- 使用 _method 欄位模擬 DELETE 請求 --}}
-                          @if(page.parentId !== null && !page.children?.length)
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          @else
-                            <button type="submit" class="btn btn-sm btn-outline-danger" disabled>
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          @end
-                        </form>
+                            @if(page.parentId !== null && !page.children?.length)
+                              <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            @else
+                              <button type="submit" class="btn btn-sm btn-outline-danger" disabled>
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            @end
+                          </form>
                         </div>
                       </td>
                     </tr>
@@ -91,42 +115,42 @@
       </div>
     </div>
 
-      {{-- 引入 Sortable.js --}}
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    {{-- 引入 Sortable.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js">
+      
+    </script>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const tbody = document.querySelector('.sortable')
-
+      document.addEventListener("DOMContentLoaded", function() {
+        const tbody = document.querySelector(".sortable");
         new Sortable(tbody, {
-          handle: '.handle',
+          handle: ".handle",
           animation: 150,
           onEnd: async function(evt) {
-            const rows = [...document.querySelectorAll('#pages-table tbody tr')]
+            const rows = [ ...document.querySelectorAll("#pages-table tbody tr") ];
             const updates = rows.map((row, index) => ({
               id: row.dataset.id,
               order: index + 1
-            }))
-
+            }));
             try {
-              const response = await fetch('{{ route('admin.pages.reorder') }}', {
-                method: 'POST',
+              const response = await fetch("{{ route('admin.pages.reorder') }}", {
+                method: "POST",
                 headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRF-TOKEN': document.querySelector('[name="_csrf"]').value
+                  "Content-Type": "application/json",
+                  "X-CSRF-TOKEN": document.querySelector('[name="_csrf"]').value
                 },
-                body: JSON.stringify({ updates })
-              })
-
-              if (!response.ok) throw new Error('Reorder failed')
-
+                body: JSON.stringify({
+                  updates: updates
+                })
+              });
+              if (!response.ok) throw new Error("Reorder failed");
             } catch (error) {
-              console.error('Error updating order:', error)
-              alert('Failed to update order. Please try again.')
+              console.error("Error updating order:", error);
+              alert("Failed to update order. Please try again.");
             }
           }
-        })
-      })
+        });
+      });
     </script>
 
   @end

@@ -96,7 +96,7 @@ import 'tinymce/skins/ui/oxide/content'
 import 'tinymce/skins/content/default/content'
 
 tinymce.init({
-  selector: '#content',
+  selector: 'textarea.editor',
   plugins: [
     'advlist',
     'autolink',
@@ -206,7 +206,9 @@ tinymce.init({
   ],
   // basic style for content
   content_style: `
-    .content-section {
+    img {
+      max-width: 100% !important;
+      height: auto !important;
     }
   `,
   // setting image upload
