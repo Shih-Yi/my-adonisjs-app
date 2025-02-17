@@ -53,7 +53,7 @@
             <div class="tab-pane fade" id="title-zh-tw" role="tabpanel">
               <input
                 type="text"
-                name="translations[zh-TW][title]"
+                name="translations[zh_TW][title]"
                 class="form-control"
                 value="{{ page?.translations?.find(t => t.locale === 'zh-TW')?.title || '' }}"
               />
@@ -61,7 +61,7 @@
             <div class="tab-pane fade" id="title-zh-cn" role="tabpanel">
               <input
                 type="text"
-                name="translations[zh-CN][title]"
+                name="translations[zh_CN][title]"
                 class="form-control"
                 value="{{ page?.translations?.find(t => t.locale === 'zh-CN')?.title || '' }}"
               />
@@ -75,82 +75,55 @@
   {{-- Type --}}
   <div class="mb-3">
     <label for="type" class="form-label">Type <span class="text-danger">*</span></label>
+
+    {{-- 顯示用 select --}}
     <select
       class="form-select"
       id="type"
-      name="type"
       required
-      {{ page && (page.parentId==null || page.children?.length> 0) ?
-      'disabled' : '' }}
+      {{ page && (page.parentId==null || page.children?.length > 0) ? '' : 'name=type' }}
     >
-      @if(!page)
-        @each(type in types)
-          <option value="{{ type }}">
-            {{ type }}
-          </option>
-        @end
-      @else
-        @if(page.parentId == null)
-          <option value="{{ page.type }}" selected>
-            {{ page.type }}
-          </option>
-        @else
-          @each(type in types)
-            <option value="{{ type }}" {{ page.type===type ? 'selected' : '' }}>
-              {{ type }}
-            </option>
-          @end
-        @end
+      @each(type in types)
+        <option value="{{ type }}" {{ page?.type === type ? 'selected' : '' }}>
+          {{ type }}
+        </option>
       @end
     </select>
-    @if(page && page.parentId == null)
-      <div class="form-text text-muted">
-        Cannot change type because this is a first level page
-      </div>
-    @elseif(page && page.children?.length > 0)
-      <div class="form-text text-muted">
-        Cannot change type because this page has children
-      </div>
+
+    {{-- 當 disabled 時使用 hidden input --}}
+    @if(page && (page.parentId==null || page.children?.length > 0))
+      <input type="hidden" name="type" value="{{ page.type }}" />
     @end
   </div>
 
   {{-- Parent --}}
   <div class="mb-3">
     <label for="parentId" class="form-label">Parent Page <span class="text-danger">*</span></label>
+
+    {{-- 顯示用 select --}}
     <select
       class="form-select"
       id="parentId"
-      name="parentId"
       required
-      {{ page && (page.parentId==null || page.children?.length>
-      0) ? 'disabled' : '' }}
+      {{ page && (page.parentId==null || page.children?.length > 0) ? '' : 'name=parentId' }}
     >
-      @if(page && page?.parentId == null)
-        <option value="">
-          No Parent
+      <option value="">
+        No Parent
+      </option>
+      @each(parentOption in parentPages)
+        <option
+          value="{{ parentOption.id }}"
+          data-type="{{ parentOption.type }}"
+          {{ page?.parentId === parentOption.id ? 'selected' : '' }}
+        >
+          {{ parentOption.translations?.find(t => t.locale === 'en')?.title || '' }}
         </option>
       @end
-      @if(page?.parentId !== null)
-        @each(parentOption in parentPages)
-          <option
-            value="{{ parentOption.id }}"
-            data-type="{{ parentOption.type }}"
-            {{ page?.parentId===parentOption.id
-        ? 'selected' : '' }}
-          >
-            {{ parentOption.translations?.find(t => t.locale === 'en')?.title || '' }}
-          </option>
-        @end
-      @end
     </select>
-    @if(page && page.parentId == null)
-      <div class="form-text text-muted">
-        Cannot change parent because this is a first level page
-      </div>
-    @elseif(page && page.children?.length > 0)
-      <div class="form-text text-muted">
-        Cannot change parent because this page has children
-      </div>
+
+    {{-- 當 disabled 時使用 hidden input --}}
+    @if(page && (page.parentId==null || page.children?.length > 0))
+      <input type="hidden" name="parentId" value="{{ page.parentId || '' }}" />
     @end
   </div>
 
@@ -206,10 +179,10 @@
               <textarea name="translations[en][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'en')?.content || '' }}</textarea>
             </div>
             <div class="tab-pane fade" id="content-zh-tw" role="tabpanel" aria-labelledby="zh-tw-tab">
-              <textarea name="translations[zh-TW][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-TW')?.content || '' }}</textarea>
+              <textarea name="translations[zh_TW][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-TW')?.content || '' }}</textarea>
             </div>
             <div class="tab-pane fade" id="content-zh-cn" role="tabpanel" aria-labelledby="zh-cn-tab">
-              <textarea name="translations[zh-CN][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-CN')?.content || '' }}</textarea>
+              <textarea name="translations[zh_CN][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-CN')?.content || '' }}</textarea>
             </div>
           </div>
         </div>
@@ -224,6 +197,8 @@
         type="checkbox"
         id="isActive"
         name="isActive"
+        value="true"
+        onchange="this.form.isActive.value = this.checked ? 'true' : 'false'"
         {{ page?.isActive ? 'checked' : '' }}
       />
       <label class="form-check-label" for="isActive">
@@ -246,6 +221,7 @@
   // Update parent page options when page type is selected
   document.getElementById("type").addEventListener("change", function() {
     const selectedType = this.value;
+    console.log(selectedType);
     const parentSelect = document.getElementById("parentId");
     const options = parentSelect.querySelectorAll("option");
     let firstMatchingOption = null;

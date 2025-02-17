@@ -2,6 +2,8 @@ import { HttpContext } from '@adonisjs/core/http'
 import Page from '#models/page'
 import db from '@adonisjs/lucid/services/db'
 import PageTranslation from '#models/page_translation'
+import PagePolicy from '#policies/page_policy'
+import { pageValidator } from '#validators/page_validator'
 import string from '@adonisjs/core/helpers/string'
 // import { sanitizeHtml } from '#services/html_sanitizer'
 
@@ -11,6 +13,8 @@ interface Translation {
 }
 
 export default class AdminPagesController {
+  #pagePolicy = new PagePolicy()
+
   /**
    * Display a listing of pages
    */
@@ -100,66 +104,59 @@ export default class AdminPagesController {
    * Store a new page
    */
   async store({ request, response }: HttpContext) {
-    const data = request.only(['type', 'parentId', 'isActive', 'slug'])
-    const translations = request.input('translations', {})
+    try {
+      const formData = request.all()
+      console.log('formData--', formData)
 
-    // 檢查英文標題是否存在
-    if (!translations.en?.title?.trim()) {
-      return response.status(422).send({
-        error: 'English title is required',
-      })
-    }
-    data.slug = string.dashCase(translations.en.title)
-
-    // 'on' -> true, undefined -> false
-    data.isActive = !!data.isActive
-
-    // 檢查父頁面是否存在且是合法的父頁面
-    if (data.parentId) {
-      const parentPage = await Page.query()
-        .where('id', data.parentId)
-        .where((query) => {
-          query
-            .whereNull('parent_id') // 第一層
-            .orWhereIn(
-              'parent_id',
-              Page.query().select('id').whereNull('parent_id') // 第二層
-            )
-        })
-        .first()
-
-      if (!parentPage) {
-        return response.status(422).send({
-          error: 'Invalid parent page. Can only select first or second level page as parent.',
-        })
+      // 處理 parentId
+      if (formData.parentId === '' || formData.parentId === undefined) {
+        formData.parentId = null
       }
 
-      // 檢查父頁面的類型是否匹配
+      // 'on' -> true, undefined -> false
+      formData.isActive = !!formData.isActive
+
+      const data = await pageValidator.validate(formData)
+
+      const validatedData = {
+        ...data,
+        slug: string.dashCase(data.translations?.en?.title || ''),
+      }
+      console.log('validatedData--', validatedData)
+
+      // 如果要改變父頁面，檢查新父頁面是否合法
+      const parentPage = await Page.findOrFail(data.parentId)
+      if (data.parentId) {
+        if (!this.#pagePolicy.isValidParent(parentPage)) {
+          return response.unprocessableEntity({ error: 'Invalid parent page' })
+        }
+      }
+
       if (parentPage.type !== data.type) {
         return response.status(422).send({ error: 'Parent page type does not match' })
       }
-    }
 
-    // Convert empty string to null for parentId
-    if (data.parentId === '' || data.parentId === undefined) {
-      data.parentId = null
-    }
+      // 創建頁面
+      const page = await Page.create(validatedData)
 
-    const page = await Page.create(data)
-
-    // 儲存每個語言版本
-    for (const [locale, translation] of Object.entries(translations) as [string, Translation][]) {
-      if (translation) {
+      // 創建翻譯
+      for (const [locale, translation] of Object.entries(data.translations)) {
         await PageTranslation.create({
           pageId: page.id,
           locale,
-          title: translation.title || '', // 英文已經檢查過了，其他語言可以是空字串
-          content: translation.content || '',
+          title: translation?.title || '',
+          content: translation?.content || '',
         })
       }
-    }
 
-    return response.redirect().toRoute('admin.pages.index')
+      return response.redirect().toRoute('admin.pages.index')
+    } catch (error) {
+      console.error('Error:', error) // 記錄錯誤
+      if (error.messages) {
+        return response.badRequest(error.messages)
+      }
+      throw error
+    }
   }
 
   /**
@@ -198,103 +195,73 @@ export default class AdminPagesController {
    * Update page
    */
   async update({ request, response, params }: HttpContext) {
-    const data = request.only(['type', 'parentId', 'isActive'])
-    const translations = request.input('translations', {})
-    console.log('translations', translations)
-    console.log('data.parentId', data.parentId)
-    // 檢查英文標題是否存在
-    if (!translations.en?.title?.trim()) {
-      return response.status(422).send({
-        error: 'English title is required',
-      })
-    }
-
-    const page = await Page.findOrFail(params.id)
+    const id = Number(params.id)
+    const page = await Page.findOrFail(id)
     await page.load('children')
 
-    data.isActive = !!data.isActive // 'on' -> true, undefined -> false
-
-    if (data.parentId === '' || data.parentId === undefined || data.parentId === null) {
-      data.parentId = null
-    }
-
-    // For first level pages: ignore submitted type and use original value
-    if (page.parentId === null) {
-      data.type = page.type // Force use original type
-      data.parentId = null // Force keep as null
-    }
-
-    if (page.children?.length > 0) {
-      data.type = page.type // Force use original type
-      data.parentId = page.parentId // Force keep as original parentId
-    }
-
-    // first level page can't change parentId and type
-    if (page.parentId === null && (data.parentId !== null || data.type !== page.type)) {
-      return response
-        .status(422)
-        .send({ error: 'Cannot change parent or type of a first level page' })
-    }
-
-    // 如果要修改父頁面，檢查新的父頁面是否合法
-    if (page.parentId !== null && data.parentId && data.parentId !== page.parentId) {
-      const parentPage = await Page.query()
-        .where('id', data.parentId)
-        .where((query) => {
-          query
-            .whereNull('parent_id') // 第一層
-            .orWhereIn(
-              'parent_id',
-              Page.query().select('id').whereNull('parent_id') // 第二層
-            )
-        })
-        .first()
-
-      if (!parentPage) {
-        return response.status(422).send({
-          error: 'Invalid parent page. Can only select first or second level page as parent.',
-        })
+    try {
+      // 驗證輸入
+      const formData = request.all()
+      formData.isActive = !!formData.isActive
+      if (formData.parentId === '' || formData.parentId === undefined) {
+        formData.parentId = null
+      }
+      console.log('formData--', formData)
+      // For first level pages: ignore submitted type and use original value
+      if (page.parentId === null) {
+        formData.type = page.type // Force use original type
+        formData.parentId = null // Force keep as null
       }
 
-      // 檢查父頁面的類型是否匹配
-      if (parentPage.type !== data.type) {
-        return response.status(422).send({ error: 'Parent page type does not match' })
+      if (page.children?.length > 0) {
+        formData.type = page.type // Force use original type
+        formData.parentId = page.parentId // Force keep as original parentId
       }
-    }
-    console.log('page.children.length', page.children.length)
-    console.log('Page parentId', page.parentId)
-    console.log('data.parentId', data.parentId)
-    // if page has children, can't change parentId
-    if (
-      page.children.length > 0 &&
-      page.parentId !== null &&
-      Number.parseInt(data.parentId, 10) !== page.parentId
-    ) {
-      return response
-        .status(422)
-        .send({ error: 'Cannot change parent of a page that has children!' })
-    }
 
-    // Convert empty string to null for parentId
-    if (data.parentId === '') {
-      data.parentId = null
-    }
+      const data = await pageValidator.validate(formData)
+      const validatedData = {
+        ...data,
+      }
+      console.log('data--', data.parentId)
+      // 檢查權限
+      if (data.type !== page.type && !this.#pagePolicy.canChangeType(page)) {
+        return response.forbidden({ error: 'Cannot change type of this page' })
+      }
 
-    // 更新翻譯
-    for (const [locale, translation] of Object.entries(translations) as [string, Translation][]) {
-      if (translation) {
+      if (data.parentId !== page.parentId && !this.#pagePolicy.canChangeParent(page)) {
+        return response.forbidden({ error: 'Cannot change parent of this page' })
+      }
+
+      // 如果要改變父頁面，檢查新父頁面是否合法
+      if (data.parentId) {
+        const parentPage = await Page.findOrFail(data.parentId)
+        if (parentPage.type !== data.type) {
+          return response.status(422).send({ error: 'Parent page type does not match' })
+        }
+        if (!this.#pagePolicy.isValidParent(parentPage)) {
+          return response.unprocessableEntity({ error: 'Invalid parent page' })
+        }
+      }
+      console.log('validatedData--', validatedData)
+      // 更新翻譯
+      for (const [locale, translation] of Object.entries(data.translations)) {
         await PageTranslation.updateOrCreate(
-          { pageId: page.id, locale },
+          { pageId: page.id, locale: this.formatLocale(locale) },
           {
-            title: translation.title || '',
-            content: translation.content || '',
+            title: translation?.title || '',
+            content: translation?.content || '',
           }
         )
       }
-    }
 
-    await page.merge(data).save()
-    return response.redirect().toRoute('admin.pages.show', { id: page.id })
+      await page.merge(validatedData).save()
+      return response.redirect().toRoute('admin.pages.show', { id: page.id })
+    } catch (error) {
+      if (error.messages) {
+        return response.badRequest(error.messages)
+      }
+      throw error
+    }
   }
 
   /**
@@ -337,5 +304,9 @@ export default class AdminPagesController {
       await trx.rollback()
       return response.status(500).send({ error: 'Failed to update order' })
     }
+  }
+
+  private formatLocale(locale: string): string {
+    return locale.replace('_', '-')
   }
 }

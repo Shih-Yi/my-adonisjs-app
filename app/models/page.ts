@@ -1,18 +1,12 @@
 import { DateTime } from 'luxon'
-import {
-  BaseModel,
-  column,
-  belongsTo,
-  hasMany,
-  beforeSave,
-  beforeCreate,
-} from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany, beforeCreate, computed } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import PageTranslation from './page_translation.js'
+import vine from '@vinejs/vine'
 
 // Define PageType outside the class
-const PAGE_TYPE_VALUES = ['about', 'im_new', 'whats_on', 'connect', 'library'] as const
-type PageType = (typeof PAGE_TYPE_VALUES)[number]
+export const PAGE_TYPE_VALUES = ['about', 'im_new', 'whats_on', 'connect', 'library'] as const
+export type PageType = (typeof PAGE_TYPE_VALUES)[number]
 
 export default class Page extends BaseModel {
   static readonly PAGE_TYPES = PAGE_TYPE_VALUES
@@ -91,5 +85,20 @@ export default class Page extends BaseModel {
   // 方便取得特定語言的翻譯
   async getTranslation(locale: string) {
     return await PageTranslation.query().where('page_id', this.id).where('locale', locale).first()
+  }
+
+  @computed()
+  get isFirstLevel() {
+    return this.parentId === null
+  }
+
+  @computed()
+  get hasChildren() {
+    return this.children?.length > 0
+  }
+
+  @computed()
+  get englishTitle() {
+    return this.translations?.find((t) => t.locale === 'en')?.title || ''
   }
 }
