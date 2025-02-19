@@ -1,28 +1,28 @@
 import Page from '#models/page'
 
 export default class PagePolicy {
-  // 檢查是否可以修改頁面類型
+  // Check if page type can be changed
   canChangeType(page: Page) {
     return !page.isFirstLevel && !page.hasChildren
   }
 
-  // 檢查是否可以修改父頁面
+  // Check if parent page can be changed
   canChangeParent(page: Page) {
     return !page.isFirstLevel && !page.hasChildren
   }
 
-  // 檢查是否可以刪除頁面
+  // Check if page can be deleted
   canDelete(page: Page) {
     return !page.isFirstLevel && !page.hasChildren
   }
 
-  // 檢查父頁面是否合法
+  // Check if parent page is valid
   isValidParent(parentPage: Page) {
     return parentPage.isFirstLevel || parentPage.parent?.isFirstLevel
   }
 
   isMatchingType(page: Page, parentPage: Page) {
-    // 檢查類型
+    // Check type
     return page.type === parentPage.type
   }
 }

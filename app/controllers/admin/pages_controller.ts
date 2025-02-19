@@ -47,22 +47,6 @@ export default class AdminPagesController {
     return view.render('admin/pages/index', { pages: organizedPages })
   }
 
-  // get page path
-  private getPagePath(page: Page, allPages: Page[]) {
-    const path = []
-    let currentPage = page
-    while (currentPage.parentId) {
-      // 加入當前頁面的 order
-      path.unshift(currentPage.order.toString().padStart(10, '0'))
-      // 找到父頁面
-      currentPage = allPages.find((p) => p.id === currentPage.parentId)!
-    }
-
-    // 加入根頁面的 order
-    path.unshift(currentPage.order.toString().padStart(10, '0'))
-    return path.join('.')
-  }
-
   /**
    * Display page details
    */
@@ -106,7 +90,6 @@ export default class AdminPagesController {
   async store({ request, response }: HttpContext) {
     try {
       const formData = request.all()
-      console.log('formData--', formData)
 
       // 處理 parentId
       if (formData.parentId === '' || formData.parentId === undefined) {
@@ -122,10 +105,11 @@ export default class AdminPagesController {
         ...data,
         slug: string.dashCase(data.translations?.en?.title || ''),
       }
-      console.log('validatedData--', validatedData)
 
       // 如果要改變父頁面，檢查新父頁面是否合法
       const parentPage = await Page.findOrFail(data.parentId)
+      await parentPage.load('parent')
+
       if (data.parentId) {
         if (!this.#pagePolicy.isValidParent(parentPage)) {
           return response.unprocessableEntity({ error: 'Invalid parent page' })
@@ -143,7 +127,7 @@ export default class AdminPagesController {
       for (const [locale, translation] of Object.entries(data.translations)) {
         await PageTranslation.create({
           pageId: page.id,
-          locale,
+          locale: this.formatLocale(locale),
           title: translation?.title || '',
           content: translation?.content || '',
         })
@@ -180,7 +164,7 @@ export default class AdminPagesController {
           )
       })
       .whereNot('id', page.id)
-      .where('type', page.type)
+      // .where('type', page.type)
       .preload('translations')
       .preload('children') // load children
 
@@ -195,8 +179,7 @@ export default class AdminPagesController {
    * Update page
    */
   async update({ request, response, params }: HttpContext) {
-    const id = Number(params.id)
-    const page = await Page.findOrFail(id)
+    const page = await Page.findOrFail(params.id)
     await page.load('children')
 
     try {
@@ -206,7 +189,6 @@ export default class AdminPagesController {
       if (formData.parentId === '' || formData.parentId === undefined) {
         formData.parentId = null
       }
-      console.log('formData--', formData)
       // For first level pages: ignore submitted type and use original value
       if (page.parentId === null) {
         formData.type = page.type // Force use original type
@@ -222,7 +204,7 @@ export default class AdminPagesController {
       const validatedData = {
         ...data,
       }
-      console.log('data--', data.parentId)
+
       // 檢查權限
       if (data.type !== page.type && !this.#pagePolicy.canChangeType(page)) {
         return response.forbidden({ error: 'Cannot change type of this page' })
@@ -235,14 +217,15 @@ export default class AdminPagesController {
       // 如果要改變父頁面，檢查新父頁面是否合法
       if (data.parentId) {
         const parentPage = await Page.findOrFail(data.parentId)
+        await parentPage.load('parent')
         if (parentPage.type !== data.type) {
           return response.status(422).send({ error: 'Parent page type does not match' })
         }
+
         if (!this.#pagePolicy.isValidParent(parentPage)) {
           return response.unprocessableEntity({ error: 'Invalid parent page' })
         }
       }
-      console.log('validatedData--', validatedData)
       // 更新翻譯
       for (const [locale, translation] of Object.entries(data.translations)) {
         await PageTranslation.updateOrCreate(
@@ -290,14 +273,12 @@ export default class AdminPagesController {
 
     // Start a transaction
     const trx = await db.transaction()
-    console.log('updates', updates)
     try {
       for (const update of updates) {
         await Page.query({ client: trx }).where('id', update.id).update({ order: update.order })
       }
 
       await trx.commit()
-      console.log('commit')
       return response.status(200).send({ message: 'Order updated successfully' })
     } catch (error) {
       console.log('error', error)
@@ -308,5 +289,21 @@ export default class AdminPagesController {
 
   private formatLocale(locale: string): string {
     return locale.replace('_', '-')
+  }
+
+  // get page path
+  private getPagePath(page: Page, allPages: Page[]) {
+    const path = []
+    let currentPage = page
+    while (currentPage.parentId) {
+      // 加入當前頁面的 order
+      path.unshift(currentPage.order.toString().padStart(10, '0'))
+      // 找到父頁面
+      currentPage = allPages.find((p) => p.id === currentPage.parentId)!
+    }
+
+    // 加入根頁面的 order
+    path.unshift(currentPage.order.toString().padStart(10, '0'))
+    return path.join('.')
   }
 }

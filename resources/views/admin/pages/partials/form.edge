@@ -81,7 +81,7 @@
       class="form-select"
       id="type"
       required
-      {{ page && (page.parentId==null || page.children?.length > 0) ? '' : 'name=type' }}
+      {{ page && (page.parentId==null || page.children?.length > 0) ? 'disabled' : 'name=type' }}
     >
       @each(type in types)
         <option value="{{ type }}" {{ page?.type === type ? 'selected' : '' }}>
@@ -105,7 +105,7 @@
       class="form-select"
       id="parentId"
       required
-      {{ page && (page.parentId==null || page.children?.length > 0) ? '' : 'name=parentId' }}
+      {{ page && (page.parentId==null || page.children?.length > 0) ? 'disabled' : 'name=parentId' }}
     >
       <option value="">
         No Parent
