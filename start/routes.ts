@@ -67,7 +67,12 @@ router
     router.put('/pages/:id', [AdminPagesController, 'update']).as('admin.pages.update')
     router.delete('/pages/:id', [AdminPagesController, 'destroy']).as('admin.pages.destroy')
     router.post('/pages/reorder', [AdminPagesController, 'reorder']).as('admin.pages.reorder')
+  })
+  .prefix('/admin')
+  .middleware([middleware.auth({ guards: ['admin'] }), middleware.admin()])
 
+router
+  .group(() => {
     router.post('/files/upload', [UploadsController, 'upload'])
   })
   .prefix('/admin')
