@@ -19,18 +19,22 @@
         --l3-badge-text: white;
       }
       
-      /* 表格行底色 */
-      
       .row-l1 {
-        background-color: rgba(var(--bs-primary-rgb), 0.05);
+        --bs-table-bg: rgb(13, 110, 253, 0.1) !important;
+        --bs-table-striped-bg: rgba(13, 110, 253, 0.05) !important;
+        --bs-table-hover-bg: rgba(13, 110, 253, 0.1) !important;
       }
       
       .row-l2 {
-        background-color: rgba(var(--bs-success-rgb), 0.05);
+        --bs-table-bg: rgba(25, 135, 84, 0.05) !important;
+        --bs-table-striped-bg: rgba(25, 135, 84, 0.1) !important;
+        --bs-table-hover-bg: rgba(25, 135, 84, 0.15) !important;
       }
       
       .row-l3 {
-        background-color: rgba(var(--bs-info-rgb), 0.05);
+        --bs-table-bg: rgba(13, 202, 240, 0.05) !important;
+        --bs-table-striped-bg: rgba(13, 202, 240, 0.1) !important;
+        --bs-table-hover-bg: rgba(13, 202, 240, 0.15) !important;
       }
       
       /* 套用顏色到相應元素 */
@@ -61,6 +65,18 @@
         background-color: var(--l3-badge-bg) !important;
         color: var(--l3-badge-text) !important;
       }
+      
+      /* 自定義 Bootstrap table-secondary 顏色 */
+      
+      .table-secondary {
+        --bs-table-bg: rgba(13, 110, 253, 0.1) !important;
+        /* 背景色 */
+        --bs-table-striped-bg: rgba(13, 110, 253, 0.1) !important;
+        --bs-table-hover-bg: rgba(13, 110, 253, 0.15) !important;
+        --bs-table-border-color: #dee2e6;
+        color: var(--bs-table-color);
+        border-color: var(--bs-table-border-color);
+      }
     </style>
 
     <div class="content-wrapper px-4 py-2">
@@ -83,7 +99,7 @@
         <div class="card">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-striped" id="pages-table">
+              <table class="table table-hover" id="pages-table">
                 <thead>
                   <tr>
                     <th style="width: 50px">
@@ -115,12 +131,7 @@
                   @each(page in pages)
                     {{-- Check if this is a L1 (parent) page --}}
                     @if(!page.parentId)
-                      <tr
-                        data-id="{{ page.id }}"
-                        data-type="{{ page.type }}"
-                        class="parent-row row-l1"
-                        style="background-color: rgba(var(--bs-primary-rgb), 0.05)"
-                      >
+                      <tr data-id="{{ page.id }}" data-type="{{ page.type }}" class="parent-row row-l1">
                         <td>
                           <i class="fas fa-grip-vertical handle" style="cursor: move"></i>
                         </td>
