@@ -1,73 +1,89 @@
 <form method="POST" action="{{ formAction }}">
   {{ csrfField() }}
-  {{-- Title --}}
-  <div class="row">
-    <div class="col-12">
-      <h5>
-        Title
-      </h5>
-      <div class="border rounded p-3 bg-light">
-        <div class="form-group">
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="title-en-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#title-en"
-                type="button"
-                role="tab"
-              >English</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="title-zh-tw-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#title-zh-tw"
-                type="button"
-                role="tab"
-              >繁體中文</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="title-zh-cn-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#title-zh-cn"
-                type="button"
-                role="tab"
-              >简体中文</button>
-            </li>
-          </ul>
+  {{-- Language Tabs --}}
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="en-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#en-content"
+        type="button"
+        role="tab"
+      >English</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="zh-tw-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#zh-tw-content"
+        type="button"
+        role="tab"
+      >繁體中文</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="zh-cn-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#zh-cn-content"
+        type="button"
+        role="tab"
+      >简体中文</button>
+    </li>
+  </ul>
 
-          <div class="tab-content mt-3">
-            <div class="tab-pane fade show active" id="title-en" role="tabpanel">
-              <input
-                type="text"
-                name="translations[en][title]"
-                class="form-control"
-                value="{{ page?.translations?.find(t => t.locale === 'en')?.title || '' }}"
-              />
-            </div>
-            <div class="tab-pane fade" id="title-zh-tw" role="tabpanel">
-              <input
-                type="text"
-                name="translations[zh_TW][title]"
-                class="form-control"
-                value="{{ page?.translations?.find(t => t.locale === 'zh-TW')?.title || '' }}"
-              />
-            </div>
-            <div class="tab-pane fade" id="title-zh-cn" role="tabpanel">
-              <input
-                type="text"
-                name="translations[zh_CN][title]"
-                class="form-control"
-                value="{{ page?.translations?.find(t => t.locale === 'zh-CN')?.title || '' }}"
-              />
-            </div>
-          </div>
-        </div>
+  {{-- Tab Content --}}
+  <div class="tab-content mt-3">
+    {{-- English --}}
+    <div class="tab-pane fade show active" id="en-content" role="tabpanel">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input
+          type="text"
+          name="translations[en][title]"
+          class="form-control"
+          value="{{ page?.translations?.find(t => t.locale === 'en')?.title || '' }}"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Content</label>
+        <textarea name="translations[en][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'en')?.content || '' }}</textarea>
+      </div>
+    </div>
+
+    {{-- 繁體中文 --}}
+    <div class="tab-pane fade" id="zh-tw-content" role="tabpanel">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input
+          type="text"
+          name="translations[zh_TW][title]"
+          class="form-control"
+          value="{{ page?.translations?.find(t => t.locale === 'zh-TW')?.title || '' }}"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Content</label>
+        <textarea name="translations[zh_TW][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-TW')?.content || '' }}</textarea>
+      </div>
+    </div>
+
+    {{-- 简体中文 --}}
+    <div class="tab-pane fade" id="zh-cn-content" role="tabpanel">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input
+          type="text"
+          name="translations[zh_CN][title]"
+          class="form-control"
+          value="{{ page?.translations?.find(t => t.locale === 'zh-CN')?.title || '' }}"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Content</label>
+        <textarea name="translations[zh_CN][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-CN')?.content || '' }}</textarea>
       </div>
     </div>
   </div>
@@ -125,69 +141,6 @@
     @if(page && (page.parentId==null || page.children?.length > 0))
       <input type="hidden" name="parentId" value="{{ page.parentId || '' }}" />
     @end
-  </div>
-
-  {{-- Content --}}
-  <div class="row">
-    <div class="col-12">
-      <h5>
-        Content
-      </h5>
-      <div class="border rounded p-3 bg-light">
-        <div class="form-group">
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="en-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#content-en"
-                type="button"
-                role="tab"
-                aria-controls="content-en"
-                aria-selected="true"
-              >English</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="zh-tw-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#content-zh-tw"
-                type="button"
-                role="tab"
-                aria-controls="content-zh-tw"
-                aria-selected="false"
-              >繁體中文</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="zh-cn-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#content-zh-cn"
-                type="button"
-                role="tab"
-                aria-controls="content-zh-cn"
-                aria-selected="false"
-              >简体中文</button>
-            </li>
-          </ul>
-
-          <div class="tab-content mt-3">
-            <div class="tab-pane fade show active" id="content-en" role="tabpanel">
-              <textarea name="translations[en][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'en')?.content || '' }}</textarea>
-            </div>
-            <div class="tab-pane fade" id="content-zh-tw" role="tabpanel" aria-labelledby="zh-tw-tab">
-              <textarea name="translations[zh_TW][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-TW')?.content || '' }}</textarea>
-            </div>
-            <div class="tab-pane fade" id="content-zh-cn" role="tabpanel" aria-labelledby="zh-cn-tab">
-              <textarea name="translations[zh_CN][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-CN')?.content || '' }}</textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="mb-3">
