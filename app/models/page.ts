@@ -66,12 +66,17 @@ export default class Page extends BaseModel {
     // get all first level pages
     const allFirstLevelPages = await this.query()
       .whereNull('parent_id')
+      .where('is_active', true)
       .preload('translations')
       .preload('children', (childrenQuery) => {
         childrenQuery
+          .where('is_active', true)
           .preload('translations')
           .preload('children', (grandchildrenQuery) => {
-            grandchildrenQuery.preload('translations').orderBy('order', 'asc')
+            grandchildrenQuery
+              .where('is_active', true)
+              .preload('translations')
+              .orderBy('order', 'asc')
           })
           .orderBy('order', 'asc')
       })
@@ -90,6 +95,10 @@ export default class Page extends BaseModel {
   @computed()
   get isFirstLevel() {
     return this.parentId === null
+  }
+
+  get isSecondLevel() {
+    return this.parentId !== null && this.parent?.parentId === null
   }
 
   @computed()
