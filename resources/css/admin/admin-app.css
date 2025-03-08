@@ -2,7 +2,7 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 @import "admin-lte";
 @import 'sweetalert2/dist/sweetalert2.css';
-@import "toastr";
+@import "toastr/build/toastr.min.css";
 /* @import 'trix/dist/trix.css'; */
 /* @import "actiontext.css"; */
 /* @import "login.css"; */

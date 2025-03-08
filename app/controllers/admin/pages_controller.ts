@@ -50,21 +50,26 @@ export default class AdminPagesController {
   /**
    * Display page details
    */
-  async show({ params, view }: HttpContext) {
-    const page = await Page.query().preload('translations').where('id', params.id).firstOrFail()
+  async show({ params, view, session }: HttpContext) {
+    try {
+      const page = await Page.query().preload('translations').where('id', params.id).firstOrFail()
 
-    // If there is a parent page, preload it
-    if (page.parentId) {
-      await page.load('parent')
+      // If there is a parent page, preload it
+      if (page.parentId) {
+        await page.load('parent')
+      }
+
+      return view.render('admin/pages/show', { page })
+    } catch (error) {
+      session.flash('flash', { type: 'error', message: 'Page not found' })
+      throw error
     }
-
-    return view.render('admin/pages/show', { page })
   }
 
   /**
    * Show the form for creating a new page
    */
-  async create({ view }: HttpContext) {
+  async create({ view, session }: HttpContext) {
     // Get first and second level pages only
     const parentPages = await Page.query()
       .where((query) => {
@@ -87,7 +92,7 @@ export default class AdminPagesController {
   /**
    * Store a new page
    */
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, session }: HttpContext) {
     try {
       const formData = request.all()
 
@@ -133,13 +138,13 @@ export default class AdminPagesController {
         })
       }
 
-      return response.redirect().toRoute('admin.pages.index')
+      session.flash('success', 'Page created successfully')
+      return response.redirect().toRoute('admin.pages.show', { id: page.id })
     } catch (error) {
-      console.error('Error:', error) // 記錄錯誤
       if (error.messages) {
-        return response.badRequest(error.messages)
+        session.flash('error', 'Failed to create page')
+        return response.redirect().back()
       }
-      throw error
     }
   }
 
@@ -178,7 +183,7 @@ export default class AdminPagesController {
   /**
    * Update page
    */
-  async update({ request, response, params }: HttpContext) {
+  async update({ request, response, params, session }: HttpContext) {
     const page = await Page.findOrFail(params.id)
     await page.load('children')
 
@@ -238,9 +243,11 @@ export default class AdminPagesController {
       }
 
       await page.merge(validatedData).save()
+      session.flash('flash', { type: 'success', message: 'Page updated successfully' })
       return response.redirect().toRoute('admin.pages.show', { id: page.id })
     } catch (error) {
       if (error.messages) {
+        session.flash('flash', { type: 'error', message: 'Failed to update page' })
         return response.badRequest(error.messages)
       }
       throw error
@@ -250,21 +257,24 @@ export default class AdminPagesController {
   /**
    * Delete page
    */
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, session }: HttpContext) {
     const page = await Page.findOrFail(params.id)
     await page.load('children') // load children
 
     // check if it's a first level page
     if (page.parentId === null) {
+      session.flash('flash', { type: 'error', message: 'Cannot delete first level page' })
       return response.status(422).send({ error: 'Cannot delete first level page' })
     }
 
     // check if it has children
     if (page.children.length > 0) {
+      session.flash('flash', { type: 'error', message: 'Cannot delete page that has children' })
       return response.status(422).send({ error: 'Cannot delete page that has children' })
     }
 
     await page.delete()
+    session.flash('flash', { type: 'success', message: 'Page deleted successfully' })
     return response.redirect().toRoute('admin.pages.index')
   }
 
@@ -277,13 +287,12 @@ export default class AdminPagesController {
       for (const update of updates) {
         await Page.query({ client: trx }).where('id', update.id).update({ order: update.order })
       }
-
       await trx.commit()
-      return response.status(200).send({ message: 'Order updated successfully' })
+      return response.status(200).send({ success: true })
     } catch (error) {
       console.log('error', error)
       await trx.rollback()
-      return response.status(500).send({ error: 'Failed to update order' })
+      return response.status(500).send({ success: false })
     }
   }
 

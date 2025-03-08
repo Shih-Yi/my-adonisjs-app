@@ -18,15 +18,30 @@ import '@popperjs/core'
 // Import FontAwesome JS
 import '@fortawesome/fontawesome-free/js/all.min.js'
 
-// Import AdminLTE
-import 'admin-lte/dist/css/adminlte.min.css'
-import 'admin-lte/dist/js/adminlte.min.js'
+// Import Toastr
+// admin-lte Toastr is compatible with Bootstrap 4.6.0, but we use Bootstrap 5.3.0
+// so we need to import Toastr ourselves
+import toastr from 'toastr'
+import 'toastr/build/toastr.min.css'
+
+// Configure toastr
+toastr.options = {
+  closeButton: true,
+  progressBar: true,
+  positionClass: 'toast-top-right',
+  timeOut: 3000,
+}
+
+// Make toastr available globally
+window.toastr = toastr
 
 // Import Custom CSS
 import '../../css/admin/admin-app.css'
 
+import '../custom.js'
+
 // =======================
-// 2. Initialize  Components
+// 2. Initialize Components
 // =======================
 
 document.addEventListener('DOMContentLoaded', () => {

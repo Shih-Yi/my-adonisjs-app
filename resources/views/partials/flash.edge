@@ -1,0 +1,17 @@
+@if(flashMessages.has('flash'))
+  <script>
+    try {
+      const flashData = {{{ JSON.stringify(flashMessages.get('flash')) }}};
+      const flash = typeof flashData === "string" ? JSON.parse(flashData) : flashData;
+      window.addEventListener("DOMContentLoaded", () => {
+        if (window.toastr) {
+          toastr[flash.type](flash.message);
+        } else {
+          console.error("Toastr is not loaded");
+        }
+      });
+    } catch (e) {
+      console.error("Error parsing flash message:", e);
+    }
+  </script>
+@end

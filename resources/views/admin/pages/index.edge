@@ -330,10 +330,22 @@
                     updates: updates
                   })
                 });
-                if (!response.ok) throw new Error("Reorder failed");
+                const result = await response.json();
+                if (!result.success) {
+                  // 如果更新失敗，顯示錯誤訊息
+                  toastr.error("Failed to update order");
+                  // 恢復原始排序
+                  evt.item.parentNode.insertBefore(evt.item, evt.oldIndex < evt.newIndex ? evt.oldNextSibling : evt.oldPrevSibling);
+                  return;
+                }
+                // 成功時顯示成功訊息
+                toastr.success("Order updated successfully");
               } catch (error) {
                 console.error("Error updating order:", error);
-                alert("Failed to update order. Please try again.");
+                // 顯示錯誤訊息
+                toastr.error("Failed to update order. Please try again.");
+                // 恢復原始排序
+                evt.item.parentNode.insertBefore(evt.item, evt.oldIndex < evt.newIndex ? evt.oldNextSibling : evt.oldPrevSibling);
               }
             }
           });

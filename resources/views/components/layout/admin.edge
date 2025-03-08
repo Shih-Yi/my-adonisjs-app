@@ -13,6 +13,11 @@
     <div class="wrapper">
       @include('partials/admin/admin-nav')
       @include('partials/admin/admin-sidebar')
+
+      {{-- Flash Messages --}}
+      @include('partials/flash')
+
+      {{-- Main Content --}}
       {{{ await $slots.main() }}}
       @include('partials/admin/admin-footer')
     </div>
