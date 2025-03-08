@@ -117,12 +117,14 @@ export default class AdminPagesController {
 
       if (data.parentId) {
         if (!this.#pagePolicy.isValidParent(parentPage)) {
-          return response.unprocessableEntity({ error: 'Invalid parent page' })
+          session.flash('error', 'Invalid parent page')
+          return response.redirect().back()
         }
       }
 
       if (parentPage.type !== data.type) {
-        return response.status(422).send({ error: 'Parent page type does not match' })
+        session.flash('error', 'Parent page type does not match')
+        return response.redirect().back()
       }
 
       // 創建頁面
@@ -212,11 +214,13 @@ export default class AdminPagesController {
 
       // 檢查權限
       if (data.type !== page.type && !this.#pagePolicy.canChangeType(page)) {
-        return response.forbidden({ error: 'Cannot change type of this page' })
+        session.flash('error', 'Cannot change type of this page')
+        return response.redirect().back()
       }
 
       if (data.parentId !== page.parentId && !this.#pagePolicy.canChangeParent(page)) {
-        return response.forbidden({ error: 'Cannot change parent of this page' })
+        session.flash('error', 'Cannot change parent of this page')
+        return response.redirect().back()
       }
 
       // 如果要改變父頁面，檢查新父頁面是否合法
@@ -224,11 +228,13 @@ export default class AdminPagesController {
         const parentPage = await Page.findOrFail(data.parentId)
         await parentPage.load('parent')
         if (parentPage.type !== data.type) {
-          return response.status(422).send({ error: 'Parent page type does not match' })
+          session.flash('error', 'Parent page type does not match')
+          return response.redirect().back()
         }
 
         if (!this.#pagePolicy.isValidParent(parentPage)) {
-          return response.unprocessableEntity({ error: 'Invalid parent page' })
+          session.flash('error', 'Invalid parent page')
+          return response.redirect().back()
         }
       }
       // 更新翻譯
@@ -264,13 +270,13 @@ export default class AdminPagesController {
     // check if it's a first level page
     if (page.parentId === null) {
       session.flash('flash', { type: 'error', message: 'Cannot delete first level page' })
-      return response.status(422).send({ error: 'Cannot delete first level page' })
+      return response.redirect().back()
     }
 
     // check if it has children
     if (page.children.length > 0) {
       session.flash('flash', { type: 'error', message: 'Cannot delete page that has children' })
-      return response.status(422).send({ error: 'Cannot delete page that has children' })
+      return response.redirect().back()
     }
 
     await page.delete()
@@ -288,6 +294,7 @@ export default class AdminPagesController {
         await Page.query({ client: trx }).where('id', update.id).update({ order: update.order })
       }
       await trx.commit()
+      // handel by ajax
       return response.status(200).send({ success: true })
     } catch (error) {
       console.log('error', error)
