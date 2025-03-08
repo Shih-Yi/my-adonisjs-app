@@ -71,7 +71,7 @@
               </div>
               <div class="col-md-6">
                 <h5>
-                  Metadata
+                  Details
                 </h5>
                 <table class="table">
                   <tr>
@@ -90,7 +90,7 @@
                       {{ page.updatedAt.toFormat('yyyy-MM-dd HH:mm') }}
                     </td>
                   </tr>
-                  @if(page.parentId)
+                  {{-- @if(page.parentId)
                     <tr>
                       <th>
                         Parent Page:
@@ -99,7 +99,7 @@
                         {{ page.parent?.title || 'N/A' }}
                       </td>
                     </tr>
-                  @end
+                  @end --}}
                 </table>
               </div>
             </div>

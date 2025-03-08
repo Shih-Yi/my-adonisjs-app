@@ -1131,7 +1131,7 @@ button.scrollTopStick.active {
     align-items: center;
 }
 .desktop-nav nav .nav-bar > ul > li > a{
-    font-size: 18px;
+    font-size: 18.5px;
     line-height: 28px;
     color: #333;
     font-weight: 500;
@@ -6267,5 +6267,18 @@ ul {
 .content img.align-center {
   margin-left: auto;
   margin-right: auto;
+}
+
+/* 頂部通知欄的文字樣式 */
+.top-bar .login li a {
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: justify;
+}
+
+.top-bar .login li a img {
+  flex-shrink: 0;
 }
 

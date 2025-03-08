@@ -49,7 +49,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Content</label>
-        <textarea name="translations[en][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'en')?.content || '' }}</textarea>
+        <textarea name="translations[en][content]" class="form-control editor" rows="30">{{ page?.translations?.find(t => t.locale === 'en')?.content || '' }}</textarea>
       </div>
     </div>
 
@@ -66,7 +66,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Content</label>
-        <textarea name="translations[zh_TW][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-TW')?.content || '' }}</textarea>
+        <textarea name="translations[zh_TW][content]" class="form-control editor" rows="30">{{ page?.translations?.find(t => t.locale === 'zh-TW')?.content || '' }}</textarea>
       </div>
     </div>
 
@@ -83,7 +83,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Content</label>
-        <textarea name="translations[zh_CN][content]" class="form-control editor" rows="10">{{ page?.translations?.find(t => t.locale === 'zh-CN')?.content || '' }}</textarea>
+        <textarea name="translations[zh_CN][content]" class="form-control editor" rows="30">{{ page?.translations?.find(t => t.locale === 'zh-CN')?.content || '' }}</textarea>
       </div>
     </div>
   </div>
@@ -174,7 +174,6 @@
   // Update parent page options when page type is selected
   document.getElementById("type").addEventListener("change", function() {
     const selectedType = this.value;
-    console.log(selectedType);
     const parentSelect = document.getElementById("parentId");
     const options = parentSelect.querySelectorAll("option");
     let firstMatchingOption = null;
