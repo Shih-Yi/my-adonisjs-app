@@ -1,38 +1,48 @@
 <form method="POST" action="{{ formAction }}">
   {{ csrfField() }}
   {{-- Language Tabs --}}
-  <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link active"
-        id="en-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#en-content"
-        type="button"
-        role="tab"
-      >English</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="zh-tw-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#zh-tw-content"
-        type="button"
-        role="tab"
-      >繁體中文</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="zh-cn-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#zh-cn-content"
-        type="button"
-        role="tab"
-      >简体中文</button>
-    </li>
-  </ul>
+  <div class="d-flex justify-content-between align-items-center">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="en-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#en-content"
+          type="button"
+          role="tab"
+        >English</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="zh-tw-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#zh-tw-content"
+          type="button"
+          role="tab"
+        >繁體中文</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="zh-cn-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#zh-cn-content"
+          type="button"
+          role="tab"
+        >简体中文</button>
+      </li>
+    </ul>
+    <div class="d-flex">
+      <a href="{{ route('admin.pages.index') }}" class="btn btn-secondary me-2">
+        <i class="fas fa-times me-2"></i>Cancel
+      </a>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save me-2"></i>{{ page ? 'Update' : 'Create' }} Page
+      </button>
+    </div>
+  </div>
 
   {{-- Tab Content --}}
   <div class="tab-content mt-3">
@@ -203,7 +213,7 @@
     }
   });
   // Trigger on page load if editing
-  
+
   if (document.getElementById("type").value) {
     document.getElementById("type").dispatchEvent(new Event("change"));
   }
