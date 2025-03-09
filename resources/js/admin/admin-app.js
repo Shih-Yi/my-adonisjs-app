@@ -18,6 +18,9 @@ import '@popperjs/core'
 // Import FontAwesome JS
 import '@fortawesome/fontawesome-free/js/all.min.js'
 
+// Import AdminLTE
+import 'admin-lte/dist/css/adminlte.min.css'
+import 'admin-lte/dist/js/adminlte.min.js'
 // Import Toastr
 // admin-lte Toastr is compatible with Bootstrap 4.6.0, but we use Bootstrap 5.3.0
 // so we need to import Toastr ourselves
