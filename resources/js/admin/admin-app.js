@@ -61,11 +61,25 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   let url = window.location.href
+  let currentPath = window.location.pathname
+  let baseUrl = ''
 
-  // show sidebar by url
+  // Parse current path to get base URL
+  const matches = currentPath.match(/\/admin\/(\w+)/)
+  if (currentPath === '/admin') {
+    baseUrl = '/admin'
+  } else if (matches) {
+    baseUrl = `/admin/${matches[1]}`
+  }
+
+  // Show sidebar by url
   $(function ($) {
     $('.nav li a').each(function () {
-      if (this.href === url) {
+      // Check if menu item href matches base URL
+      if (
+        (baseUrl === '/admin' && this.href === url) ||
+        (baseUrl !== '/admin' && this.href.includes(baseUrl))
+      ) {
         $(this).closest('a').addClass('active')
         $(this).parents('.has-treeview').addClass('menu-is-opening')
         $(this).parents('.has-treeview').addClass('menu-open')
@@ -75,11 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   })
 
-  // click sidebar link
+  // Click sidebar link
   $('.nav li a').click(function () {
     $('.nav li a').removeClass('active')
     $('.nav li a').each(function () {
-      if (this.href === url) {
+      if (
+        (baseUrl === '/admin' && this.href === url) ||
+        (baseUrl !== '/admin' && this.href.includes(baseUrl))
+      ) {
         $(this).closest('a').addClass('active')
         $(this).parents('.has-treeview').find('.treeview-link').addClass('active')
       }
