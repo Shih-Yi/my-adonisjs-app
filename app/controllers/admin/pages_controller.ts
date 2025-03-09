@@ -138,9 +138,9 @@ export default class AdminPagesController {
       return response.redirect().toRoute('admin.pages.show', { id: page.id })
     } catch (error) {
       if (error.messages) {
-        session.flash('flash', { type: 'error', message: 'Failed to create page' })
-        return response.redirect().back()
+        session.flash('flash', { type: 'error', message: 'error: page create/store failed' })
       }
+      return response.redirect().back()
     }
   }
 
@@ -248,7 +248,7 @@ export default class AdminPagesController {
       return response.redirect().toRoute('admin.pages.show', { id: page.id })
     } catch (error) {
       if (error.messages) {
-        session.flash('flash', { type: 'error', message: 'Failed to update page' })
+        session.flash('flash', { type: 'error', message: 'error: page update failed' })
       }
       return response.redirect().back()
     }
