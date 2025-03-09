@@ -50,7 +50,7 @@ export default class AdminPagesController {
   /**
    * Display page details
    */
-  async show({ params, view, session }: HttpContext) {
+  async show({ params, view, session, response }: HttpContext) {
     try {
       const page = await Page.query().preload('translations').where('id', params.id).firstOrFail()
 
@@ -62,14 +62,14 @@ export default class AdminPagesController {
       return view.render('admin/pages/show', { page })
     } catch (error) {
       session.flash('flash', { type: 'error', message: 'Page not found' })
-      throw error
+      return response.redirect().back()
     }
   }
 
   /**
    * Show the form for creating a new page
    */
-  async create({ view, session }: HttpContext) {
+  async create({ view }: HttpContext) {
     // Get first and second level pages only
     const parentPages = await Page.query()
       .where((query) => {
@@ -117,13 +117,13 @@ export default class AdminPagesController {
 
       if (data.parentId) {
         if (!this.#pagePolicy.isValidParent(parentPage)) {
-          session.flash('error', 'Invalid parent page')
+          session.flash('flash', { type: 'error', message: 'Invalid parent page' })
           return response.redirect().back()
         }
       }
 
       if (parentPage.type !== data.type) {
-        session.flash('error', 'Parent page type does not match')
+        session.flash('flash', { type: 'error', message: 'Parent page type does not match' })
         return response.redirect().back()
       }
 
@@ -140,11 +140,11 @@ export default class AdminPagesController {
         })
       }
 
-      session.flash('success', 'Page created successfully')
+      session.flash('flash', { type: 'success', message: 'Page created successfully' })
       return response.redirect().toRoute('admin.pages.show', { id: page.id })
     } catch (error) {
       if (error.messages) {
-        session.flash('error', 'Failed to create page')
+        session.flash('flash', { type: 'error', message: 'Failed to create page' })
         return response.redirect().back()
       }
     }
@@ -214,12 +214,12 @@ export default class AdminPagesController {
 
       // 檢查權限
       if (data.type !== page.type && !this.#pagePolicy.canChangeType(page)) {
-        session.flash('error', 'Cannot change type of this page')
+        session.flash('flash', { type: 'error', message: 'Cannot change type of this page' })
         return response.redirect().back()
       }
 
       if (data.parentId !== page.parentId && !this.#pagePolicy.canChangeParent(page)) {
-        session.flash('error', 'Cannot change parent of this page')
+        session.flash('flash', { type: 'error', message: 'Cannot change parent of this page' })
         return response.redirect().back()
       }
 
@@ -228,15 +228,16 @@ export default class AdminPagesController {
         const parentPage = await Page.findOrFail(data.parentId)
         await parentPage.load('parent')
         if (parentPage.type !== data.type) {
-          session.flash('error', 'Parent page type does not match')
+          session.flash('flash', { type: 'error', message: 'Parent page type does not match' })
           return response.redirect().back()
         }
 
         if (!this.#pagePolicy.isValidParent(parentPage)) {
-          session.flash('error', 'Invalid parent page')
+          session.flash('flash', { type: 'error', message: 'Invalid parent page' })
           return response.redirect().back()
         }
       }
+
       // 更新翻譯
       for (const [locale, translation] of Object.entries(data.translations)) {
         await PageTranslation.updateOrCreate(
@@ -254,9 +255,8 @@ export default class AdminPagesController {
     } catch (error) {
       if (error.messages) {
         session.flash('flash', { type: 'error', message: 'Failed to update page' })
-        return response.badRequest(error.messages)
       }
-      throw error
+      return response.redirect().back()
     }
   }
 
@@ -294,7 +294,7 @@ export default class AdminPagesController {
         await Page.query({ client: trx }).where('id', update.id).update({ order: update.order })
       }
       await trx.commit()
-      // handel by ajax
+      // error handled by ajax
       return response.status(200).send({ success: true })
     } catch (error) {
       console.log('error', error)
