@@ -5,12 +5,6 @@ import PageTranslation from '#models/page_translation'
 import PagePolicy from '#policies/page_policy'
 import { pageValidator } from '#validators/page_validator'
 import string from '@adonisjs/core/helpers/string'
-// import { sanitizeHtml } from '#services/html_sanitizer'
-
-interface Translation {
-  title?: string
-  content?: string
-}
 
 export default class AdminPagesController {
   #pagePolicy = new PagePolicy()
