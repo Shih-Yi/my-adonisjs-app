@@ -54,6 +54,10 @@ Table of content
 48. Donation Page
 */
 
+:root {
+  --primary-color: #b1712a;  /* 棕色主題色 */
+}
+
 
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -1873,7 +1877,7 @@ button.scrollTopStick.active {
 /* About Two Start */
 .about-two .about-info {
     margin-bottom: 65px !important;
-    width: 50%;
+    width: 70%;
 }
 .about-two .about-info h2 {
     line-height: 52px;
@@ -4298,23 +4302,23 @@ ul.author-s-medias{
     right: -7px;
     z-index: -1;
 }
-.widget-recent-articles ul li img {
+.widget-categories ul li img {
     width: 110px;
     height: 110px;
     margin-right: 10px;
 }
-.widget-recent-articles .post-date {
+.widget-categories .post-date {
     font-size: 16px;
     padding: 1px 11px;
     text-transform: uppercase;
 }
-.widget-recent-articles a {
+.widget-categories a {
     font-size: 19px;
     line-height: 24px;
     color: #333;
     margin-top: 5px;
 }
-.widget-recent-articles ul li:not(:last-child){
+.widget-categories ul li:not(:last-child){
     margin-bottom: 20px;
 }
 .widget-categories ul li a{
@@ -4334,13 +4338,33 @@ ul.author-s-medias{
     position: relative;
     z-index: 0;
     overflow: hidden;
-}
-.widget-categories ul li:before {
+    transition: all 0.3s ease;
+  }
+
+  .widget-categories ul li:before {
     background-color: rgb(171 142 102 / 40%);
-}
-.widget-categories ul li:not(:last-child){
+  }
+
+  .widget-categories ul li:not(:last-child) {
     margin-bottom: 3px;
-}
+  }
+
+  .widget-categories ul li a.active {
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+
+  .widget-categories .flex-all {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-bg-clr {
+    background-color: var(--primary-color);
+  }
 .widget-popular-posts a {
     font-size: 20px;
     line-height: 23px;
@@ -6280,5 +6304,204 @@ ul {
 
 .top-bar .login li a img {
   flex-shrink: 0;
+}
+
+.widget-categories .active {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  list-style: none;
+  padding-left: 0;
+}
+
+.sidebar-nav .nav-item {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-nav .btn-toggle {
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  border: 0;
+  color: var(--primary-color);
+}
+
+.sidebar-nav .btn-toggle i {
+  transition: transform 0.35s ease;
+  transform-origin: 0.5em 50%;
+}
+
+.sidebar-nav .btn-toggle[aria-expanded="true"] i {
+  transform: rotate(90deg);
+}
+
+.sidebar-nav .btn-toggle-nav {
+  list-style: none;
+  padding-left: 1.5rem;
+}
+
+.sidebar-nav .nav-link {
+  color: inherit;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link.active {
+  color: var(--primary-color);
+}
+
+/* 第三層縮排 */
+.sidebar-nav .btn-toggle-nav .btn-toggle-nav {
+  padding-left: 1.5rem;
+}
+
+/* 調整第二層和第三層的間距 */
+.sidebar-nav .btn-toggle-nav li {
+  margin-top: 0.25rem;
+}
+
+/* 第一層 active */
+/* .sidebar-nav > .nav-item > div > div > .active {
+  color: #first_level_color;
+} */
+
+/* 第二層 active */
+/* .sidebar-nav .btn-toggle-nav > li > div > .active {
+  color: #second_level_color;
+} */
+
+/* 第三層 active */
+/* .sidebar-nav .btn-toggle-nav .btn-toggle-nav > li > .active {
+  color: #third_level_color;
+} */
+
+/* 側邊欄連結的 active 狀態 */
+.widget-categories .nav-link.active {
+  color: #b1712a;  /* 或其他你想要的顏色 */
+  font-weight: bold;
+}
+
+/* hover 效果 */
+.widget-categories .nav-link:hover {
+  color: #8a5720;  /* 稍微深一點的顏色 */
+}
+
+/* 子選單樣式 */
+.widget-categories .sub-menu {
+  padding-left: 0;
+  margin-top: 3px;
+  width: 100%;
+}
+
+/* 確保子選單項目也有相同的基本樣式 */
+.widget-categories .sub-menu li {
+  height: 58px;
+  border-radius: 100px;
+  margin-bottom: 3px;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* 子選單項目的背景效果 */
+.widget-categories .sub-menu li:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  z-index: -1;
+}
+
+/* Toggle 按鈕樣式 */
+.widget-categories .toggle-btn {
+  border: none;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.widget-categories .toggle-btn i {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.widget-categories .toggle-btn[aria-expanded="false"] i {
+  transform: rotate(-90deg);
+}
+
+/* 第二層選單特別樣式 - 不內縮 */
+.widget-categories > ul > div > .sub-menu {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* 第三層選單特別樣式 - 有內縮 */
+.widget-categories .sub-menu .sub-menu {
+  padding-left: 20px;
+}
+
+/* 第三層項目樣式 - 稍微不同 */
+.widget-categories .sub-menu .sub-menu > li {
+  background-color: rgba(177, 113, 42, 0.04);
+  border-left: 4px solid rgba(177, 113, 42, 0.3);
+}
+
+/* 第一層項目樣式 - 背景深一點 */
+.widget-categories > ul > li {
+  background-color: rgba(177, 113, 42, 0.15);
+
+}
+
+/* 第二層項目樣式 */
+.widget-categories .sub-menu > li {
+  background-color: rgba(177, 113, 42, 0.08);
+}
+
+/* 第二層項目樣式 */
+.widget-categories .sub-menu > li {
+  background-color: rgba(177, 113, 42, 0.08);
+   position: relative;
+   overflow: hidden;
+   transition: all 0.3s ease;
+}
+
+/* 第二層和第三層的背景動畫效果 */
+.widget-categories .sub-menu > li:before,
+.widget-categories .sub-menu .sub-menu > li:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(177, 113, 42, 0.05);
+  z-index: -1;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+/* Hover 效果 */
+.widget-categories .sub-menu > li:hover:before,
+.widget-categories .sub-menu .sub-menu > li:hover:before {
+  transform: translateX(0);
+}
+
+/* Active 效果 */
+.widget-categories .sub-menu > li:has(.active):before,
+.widget-categories .sub-menu .sub-menu > li:has(.active):before {
+  transform: translateX(0);
+  background-color: rgba(177, 113, 42, 0.1);
 }
 

@@ -41,10 +41,29 @@ export default class PagesController extends BaseController {
 
     const customTemplate = `pages/custom/${params.slug}`
     const templatePath = join(process.cwd(), 'resources/views', `${customTemplate}.edge`)
+    // 獲取同類型的所有頁面並按照層級排序
+    const relatedPages = await Page.query()
+      .preload('translations')
+      .preload('children', (query) => {
+        query
+          .preload('translations')
+          .preload('children', (q) => {
+            q.preload('translations').where('type', page.type).orderBy('order', 'asc')
+          })
+          .where('type', page.type)
+          .orderBy('order', 'asc')
+      })
+      .where('type', page.type)
+      .whereNull('parent_id') // 只獲取頂層頁面
+      .orderBy([
+        { column: 'parent_id', order: 'asc', nulls: 'first' },
+        { column: 'order', order: 'asc' },
+      ])
 
     return view.render('pages/show', {
       page,
       customTemplate: existsSync(templatePath) ? customTemplate : null,
+      relatedPages,
     })
   }
 }
