@@ -7,7 +7,7 @@
           <header class="mb-4">
             <h1>{{ page.title }}</h1>
           </header>
-    
+
           <div class="content">
             @if(customTemplate)
               @include(customTemplate)
@@ -17,8 +17,8 @@
           </div>
         </article>
       </div>
-    
-    
+
+
     </div> --}}
 
     <div class="page-content-wrapper">
@@ -45,7 +45,7 @@
                 @else
                   {{{ (await page.getTranslation(i18n.locale))?.content || (await page.getTranslation('en'))?.content }}}
                 @end
-                
+
               </div>
 
             </div>
@@ -56,62 +56,81 @@
 
                 <div class="blog-sidebar">
 
-                  <div class="widget widget-recent-articles">
+                  <div class="widget widget-categories">
 
                     <h3>
-                      Recent Articles
+                      Related Pages
                     </h3>
 
                     <ul>
-
-                      <li class="d-flex align-items-center">
-
-                        <img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image" />
-
-                        <div>
-
-                          <p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">
-                            21 dec, 2021
-                          </p>
-
-                          <a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
-
-                        </div>
-
-                      </li>
-
-                      <li class="d-flex align-items-center">
-
-                        <img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image One" />
-
-                        <div>
-
-                          <p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">
-                            21 dec, 2021
-                          </p>
-
-                          <a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
-
-                        </div>
-
-                      </li>
-
-                      <li class="d-flex align-items-center">
-
-                        <img class="rounded-circle" src="https://via.placeholder.com/110x110" alt="Sidebar Image Two" />
-
-                        <div>
-
-                          <p class="post-date theme-bg-clr text-white font-bold d-inline-flex text-uppercase">
-                            21 dec, 2021
-                          </p>
-
-                          <a href="blog-detail.html" class="d-flex font-bold">Chris Sibbald talks about taking</a>
-
-                        </div>
-
-                      </li>
-
+                      @each(relatedPage in relatedPages)
+                        <li class="d-flex justify-content-between align-items-center light-bg">
+                          <div class="d-flex align-items-center w-100">
+                            <a
+                              href="{{ route('pages.show', [relatedPage.slug]) }}"
+                              class="font-semi-bold {{ page.id === relatedPage.id ? 'active' : '' }}"
+                            >
+                              {{ relatedPage.translations?.find(t => t.locale === i18n.locale)?.title || relatedPage.translations?.find(t => t.locale === 'en')?.title || '' }}
+                            </a>
+                          </div>
+                          @if(relatedPage.children?.length > 0)
+                            <button
+                              class="toggle-btn flex-all theme-bg-clr text-white font-semi-bold rounded-circle"
+                              data-bs-toggle="collapse"
+                              data-bs-target="#collapse-{{ relatedPage.id }}"
+                              aria-expanded="true"
+                            >
+                              <i class="fas fa-chevron-down"></i>
+                            </button>
+                          @endif
+                        </li>
+                        @if(relatedPage.children?.length > 0)
+                          <div class="collapse show" id="collapse-{{ relatedPage.id }}">
+                            <ul class="sub-menu">
+                              @each(child in relatedPage.children)
+                                <li class="d-flex justify-content-between align-items-center light-bg">
+                                  <div class="d-flex align-items-center w-100">
+                                    <a
+                                      href="{{ route('pages.show', [child.slug]) }}"
+                                      class="font-semi-bold {{ page.id === child.id ? 'active' : '' }}"
+                                    >
+                                      {{ child.translations?.find(t => t.locale === i18n.locale)?.title || child.translations?.find(t => t.locale === 'en')?.title || '' }}
+                                    </a>
+                                  </div>
+                                  @if(child.children?.length > 0)
+                                    <button
+                                      class="toggle-btn flex-all theme-bg-clr text-white font-semi-bold rounded-circle"
+                                      data-bs-toggle="collapse"
+                                      data-bs-target="#collapse-{{ child.id }}"
+                                      aria-expanded="true"
+                                    >
+                                      <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                  @endif
+                                </li>
+                                @if(child.children?.length > 0)
+                                  <div class="collapse show" id="collapse-{{ child.id }}">
+                                    <ul class="sub-menu">
+                                      @each(grandChild in child.children)
+                                        <li class="d-flex justify-content-between align-items-center light-bg">
+                                          <div class="d-flex align-items-center w-100">
+                                            <a
+                                              href="{{ route('pages.show', [grandChild.slug]) }}"
+                                              class="font-semi-bold {{ page.id === grandChild.id ? 'active' : '' }}"
+                                            >
+                                              {{ grandChild.translations?.find(t => t.locale === i18n.locale)?.title || grandChild.translations?.find(t => t.locale === 'en')?.title || '' }}
+                                            </a>
+                                          </div>
+                                        </li>
+                                      @end
+                                    </ul>
+                                  </div>
+                                @endif
+                              @end
+                            </ul>
+                          </div>
+                        @endif
+                      @end
                     </ul>
 
                   </div>
@@ -130,5 +149,5 @@
     </div>
 
   @end
-  
+
 @end

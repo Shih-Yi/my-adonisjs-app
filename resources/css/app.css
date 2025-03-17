@@ -54,11 +54,6 @@ Table of content
 48. Donation Page
 */
 
-:root {
-  --primary-color: #b1712a;  /* 棕色主題色 */
-}
-
-
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /* Google Font Karla  */
@@ -87,6 +82,11 @@ html {
 small{
    font-family: 'Karla', sans-serif;
 }
+
+:root {
+  --primary-color: #CC936C; /* 棕色主題色 */
+}
+
 /* ul,
 li{
     list-style: disc;
@@ -1033,7 +1033,7 @@ button.scrollTopStick.active {
 .top-bar {
     padding: 15px 0;
     border-bottom: 5px solid #d98d39;
-    background-color: #b1712a;
+    background-color: var(--primary-color);
 }
 .top-bar .row{
     align-items: center;
@@ -1663,6 +1663,7 @@ button.scrollTopStick.active {
   justify-content: center;
 }
 @media (max-width: 991px) {
+
   .blesso_banner_part .blesso_banner_slider .swiper-slide {
     min-height: 600px;
     max-height: 100vh;
@@ -3135,6 +3136,14 @@ img.sideimage {
 /* LiveStream End */
 
 /* Event Three Start */
+.event-three {
+  padding: 80px 0 120px;
+}
+.event-three .heading {
+  padding: 30px 0 0;
+}
+
+
 .event-three .event .event-data {
     position: absolute;
     padding: 0 30px 30px 30px;
@@ -3144,6 +3153,7 @@ img.sideimage {
     -o-transform: translateY(130px);
     bottom: 0px;
     height: auto;
+    width: 100%;
 }
 .event-three .event .event-data .event img{
     height: auto;
@@ -3937,6 +3947,12 @@ img.sideimage {
 /* Cause Detail End */
 
 /* Event Detail Start */
+.event-title {
+    margin-top: 10px;
+}
+.event-three-icon {
+  background-color: #fff !important;
+}
 .event-detail .event-meta > ul > li > svg {
     width: 45px;
     height: 45px;
@@ -6048,7 +6064,7 @@ ul.meta,
 .pd-cat-tags ul li ul.pd-tag li a:hover,
 .total-donation-amount .total_amount input,
 .pastor-meta p.designation{
-color: #b1712a;
+color: var(--primary-color);
 }
 
 blockquote,
@@ -6102,7 +6118,7 @@ button.scrollTopStick,
 .payment-method .form-check-input:checked,
 .personal-info .dp-agree input:checked,
 .prog-bar .progress .progress-bar{
-background-color: #b1712a;
+  background-color: var(--primary-color);
 }
 
 
@@ -6147,7 +6163,7 @@ background-color: #b1712a;
 .personal-info select:focus,
 .total-donation-amount .total_amount input,
 .personal-info .dp-agree input:checked{
-border-color: #b1712a;
+border-color: var(--primary-color);
 }
 
 
@@ -6156,7 +6172,7 @@ border-color: #b1712a;
 .event-meta > ul > li > svg,
 .pd-cart-heart .heart:hover svg,
 .preloader svg, .about-three .counter-three .box svg {
-	fill: #b1712a;
+	fill: var(--primary-color);
 }
 
 ul {
@@ -6380,7 +6396,7 @@ ul {
 
 /* 側邊欄連結的 active 狀態 */
 .widget-categories .nav-link.active {
-  color: #b1712a;  /* 或其他你想要的顏色 */
+  color: var(--primary-color);  /* 或其他你想要的顏色 */
   font-weight: bold;
 }
 

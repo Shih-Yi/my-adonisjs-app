@@ -1,3 +1,7 @@
+:root {
+  --primary-color: #CC936C; /* 棕色主題色 */
+}
+
 @media (min-width: 992px)  {
 	.w-100{
 		width: 100%;
@@ -199,7 +203,7 @@
 @media (max-width: 1370px) {
 	.event-three .event:hover .event-data::before {
 	    top: -75px;
-	    border-bottom: 75px solid;
+	    border-bottom: 95px solid var(--primary-color);;
 	    border-right: 60px solid transparent;
 	    border-right: 370px solid transparent;
 	}
