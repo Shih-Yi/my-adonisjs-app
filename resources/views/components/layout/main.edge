@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title || 'My Website' }}</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {{ title || 'Christchurch Community Church' }}
+    </title>
 
-  {{-- Load assets with Vite --}}
-  @vite(['resources/js/app.js'])
+    {{-- Load assets with Vite --}}
+    @vite(['resources/js/app.js'])
 
-  @if ($slots.meta)
-    {{{ await $slots.meta() }}}
-  @endif
-</head>
-<body>
-  {{-- Navigation Bar --}}
-  @include('partials/nav')
+    @if ($slots.meta)
+      {{{ await $slots.meta() }}}
+    @endif
+  </head>
+  <body>
+    {{-- Navigation Bar --}}
+    @include('partials/nav')
 
-  {{-- Main Content --}}
-  {{{ await $slots.main?.() }}}
-
-  {{-- Footer --}}
-  @include('partials/footer')
-</body>
+    {{-- Main Content --}}
+    {{{ await $slots.main?.() }}}
+    {{-- Footer --}}
+    @include('partials/footer')
+  </body>
 </html>

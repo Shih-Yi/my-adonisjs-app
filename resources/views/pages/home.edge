@@ -12,17 +12,13 @@
         <div class="row">
           <div class="about-info m-auto text-center">
             <h2 class="text-center mx-auto">
-              We are one Church, <br />in four Congregations.
+              {{ t('home.church.title') }}
             </h2>
             <p data-aos="fade-up" data-aos-delay="300" data-aos-duration="500">
-              Begun as a purely Chinese Church since 1989, we are now a church that embraces people from many different cultures and backgrounds. Our roots will always be Chinese, but our future is to be a church for all peoples.
+              {{ t('home.church.description1') }}
             </p>
             <p data-aos="fade-up" data-aos-delay="300" data-aos-duration="500">
-              In 2021 we took the big step to change our English name from Christchurch Chinese
-Church to Christchurch Community Church. The reason; to make our church more
-inclusive, and send a message to our community that we are a church for all people, no
-matter where you are from. This is God's church and God welcomes all who will come to
-Him. We welcome you!
+              {{ t('home.church.description2') }}
             </p>
           </div>
         </div>
@@ -47,11 +43,11 @@ Him. We welcome you!
               </span>
 
               <h3>
-                <a href="JavaScript:void(0)">Praise & Worship</a>
+                <a href="JavaScript:void(0)">{{ t('home.fellowship.praise_worship.title') }}</a>
               </h3>
 
               <p class="mx-auto">
-                Our church is open and friendly with many social activities. To keep our church running smoothly.
+                {{ t('home.fellowship.praise_worship.description') }}
               </p>
 
             </div>
@@ -74,11 +70,11 @@ Him. We welcome you!
               </span>
 
               <h3>
-                <a href="JavaScript:void(0)">Connect Members</a>
+                <a href="JavaScript:void(0)">{{ t('home.fellowship.connect_members.title') }}</a>
               </h3>
 
               <p class="mx-auto">
-                Our church is open and friendly with many social activities. To keep our church running smoothly.
+                {{ t('home.fellowship.connect_members.description') }}
               </p>
 
             </div>
@@ -101,11 +97,11 @@ Him. We welcome you!
               </span>
 
               <h3>
-                <a href="JavaScript:void(0)">Parent's Love</a>
+                <a href="JavaScript:void(0)">{{ t('home.fellowship.parents_love.title') }}</a>
               </h3>
 
               <p class="mx-auto">
-                Our church is open and friendly with many social activities. To keep our church running smoothly.
+                {{ t('home.fellowship.parents_love.description') }}
               </p>
 
             </div>
@@ -144,22 +140,22 @@ Him. We welcome you!
               <div class="event-data light-bg">
 
                 <h4 class="event-title">
-                  <a href="event-detail.html">Encounter (English)</a>
+                  <a href="event-detail.html">{{ t('home.services.encounter.title') }}</a>
                 </h4>
 
                 <ul>
 
                   <li>
-                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />Saturday
+                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />{{ t('home.services.encounter.day') }}
                   </li>
 
                   <li>
-                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />4:30pm
+                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />{{ t('home.services.encounter.time') }}
                   </li>
 
                 </ul>
 
-                <a class="theme-btn" href="JavaScript:void(0)">Join Us</a>
+                <a class="theme-btn" href="JavaScript:void(0)">{{ t('home.services.encounter.button') }}</a>
               </div>
             </div>
           </div>
@@ -171,29 +167,29 @@ Him. We welcome you!
 
               <figure>
 
-                <img src="{{ asset('resources/images/service-2.jpg') }}" alt="event one" />
+                <img src="{{ asset('resources/images/service-5.jpg') }}" alt="event one" />
 
               </figure>
 
               <div class="event-data light-bg">
 
                 <h4 class="event-title">
-                  <a href="event-detail.html">Mandarin / English</a>
+                  <a href="event-detail.html">{{ t('home.services.mandarin_english.title') }}</a>
                 </h4>
 
                 <ul>
 
                   <li>
-                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />Sunday
+                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />{{ t('home.services.mandarin_english.day') }}
                   </li>
 
                   <li>
-                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />10:00am
+                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />{{ t('home.services.mandarin_english.time') }}
                   </li>
 
                 </ul>
 
-                <a class="theme-btn" href="JavaScript:void(0)">Join Us</a>
+                <a class="theme-btn" href="JavaScript:void(0)">{{ t('home.services.mandarin_english.button') }}</a>
               </div>
             </div>
           </div>
@@ -212,22 +208,22 @@ Him. We welcome you!
               <div class="event-data light-bg">
 
                 <h4 class="event-title">
-                  <a href="event-detail.html">Cantonese</a>
+                  <a href="event-detail.html">{{ t('home.services.cantonese.title') }}</a>
                 </h4>
 
                 <ul>
 
                   <li>
-                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />Sunday
+                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />{{ t('home.services.cantonese.day') }}
                   </li>
 
                   <li>
-                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />1:30pm
+                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />{{ t('home.services.cantonese.time') }}
                   </li>
 
                 </ul>
 
-                <a class="theme-btn" href="JavaScript:void(0)">Join Us</a>
+                <a class="theme-btn" href="JavaScript:void(0)">{{ t('home.services.cantonese.button') }}</a>
               </div>
             </div>
           </div>
@@ -246,22 +242,22 @@ Him. We welcome you!
               <div class="event-data light-bg">
 
                 <h4 class="event-title">
-                  <a href="event-detail.html">MOSAIC (English)</a>
+                  <a href="event-detail.html">{{ t('home.services.mosaic.title') }}</a>
                 </h4>
 
                 <ul>
 
                   <li>
-                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />Saturday
+                    <img src="{{ asset('resources/images/calendar.svg') }}" alt="calendar" />{{ t('home.services.mosaic.day') }}
                   </li>
 
                   <li>
-                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />5:00pm
+                    <img src="{{ asset('resources/images/clock.svg') }}" alt="clock" />{{ t('home.services.mosaic.time') }}
                   </li>
 
                 </ul>
 
-                <a class="theme-btn" href="JavaScript:void(0)">Join Us</a>
+                <a class="theme-btn" href="JavaScript:void(0)">{{ t('home.services.mosaic.button') }}</a>
               </div>
             </div>
           </div>
@@ -298,11 +294,11 @@ Him. We welcome you!
           </div>
 
           <p>
-            You are most welcome to join one of our 4 weekend services
+            {{ t('home.services.welcome_text') }}
           </p>
 
           <h2>
-            weekend services
+            {{ t('home.services.heading') }}
           </h2>
 
         </div>
@@ -353,17 +349,17 @@ Him. We welcome you!
           <ul>
 
             <li>
-              SUBSCRIBE NOW / GET EXCLUSIVE CONTENT
+              {{ t('home.media.youtube.label') }}
             </li>
 
           </ul>
 
           <h3>
-            <a href="sermon-detail.html">Subscribe to our YouTube channel</a>
+            <a href="sermon-detail.html">{{ t('home.media.youtube.title') }}</a>
           </h3>
 
           <p>
-            Never miss an upload by hitting the notification bell after subscribing to stay updated with our latest videos.
+            {{ t('home.media.youtube.description') }}
           </p>
 
         </div>
@@ -387,17 +383,17 @@ Him. We welcome you!
           <ul>
 
             <li>
-              CURRENT OPPORTUNITIES / APPLY TODAY
+              {{ t('home.media.vacancies.label') }}
             </li>
 
           </ul>
 
           <h3>
-            <a href="sermon-detail.html">Ministry Vacancies</a>
+            <a href="sermon-detail.html">{{ t('home.media.vacancies.title') }}</a>
           </h3>
 
           <p>
-            Explore our open ministry positions serving in various capacities. Join our team and grow your faith while serving others.
+            {{ t('home.media.vacancies.description') }}
           </p>
 
         </div>
@@ -424,7 +420,7 @@ Him. We welcome you!
           <ul>
 
             <li>
-              STAY INFORMED / MONTHLY UPDATES
+              {{ t('home.media.newsletter.label') }}
             </li>
 
           </ul>
@@ -432,11 +428,11 @@ Him. We welcome you!
           <h3>
             <a
               href="https://chinesechurch.us18.list-manage.com/subscribe?u=66513027ef7e5ce2b15346e36&id=cb9eff4eb9"
-            >Subscribe to our Newsletter</a>
+            >{{ t('home.media.newsletter.title') }}</a>
           </h3>
 
           <p>
-            Never miss an upload by hitting the notification bell after subscribing to stay updated with our latest videos.
+            {{ t('home.media.newsletter.description') }}
           </p>
 
         </div>
@@ -460,11 +456,11 @@ Him. We welcome you!
     <div class="heading">
 
       <p>
-        We enjoy being a multi-denominational church
+        {{ t('home.events.subtitle') }}
       </p>
 
       <h2>
-        Don't Miss Your Chance to Get Closer to God
+        {{ t('home.events.title') }}
       </h2>
 
     </div>
@@ -555,6 +551,26 @@ Him. We welcome you!
 
       </div>
 
+      <div>
+
+        <div class="event">
+
+          <img src="{{ asset('resources/images/photo-11.jpg') }}" alt="Event Image 9" />
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="event">
+
+          <img src="{{ asset('resources/images/photo-12.jpg') }}" alt="Event Image 9" />
+
+        </div>
+
+      </div>
+
     </div>
 
   </div>
@@ -574,11 +590,11 @@ Him. We welcome you!
       <div class="col-lg-5 col-md-12 col-sm-12">
 
         <h3 class="text-white">
-          Let's Keep in Touch!
+          {{ t('home.subscribe.title') }}
         </h3>
 
         <p class="text-white">
-          Subscribe to keep up with fresh news and exciting updates.
+          {{ t('home.subscribe.description') }}
         </p>
 
       </div>
@@ -591,7 +607,7 @@ Him. We welcome you!
             onclick="location.href='https://chinesechurch.us18.list-manage.com/subscribe?u=66513027ef7e5ce2b15346e36&id=cb9eff4eb9'"
             type="button"
             style="border: 1px solid white;"
-          >Subscribe</button>
+          >{{ t('home.subscribe.button') }}</button>
 
         </form>
 
