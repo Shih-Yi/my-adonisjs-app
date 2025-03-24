@@ -83,9 +83,21 @@ small{
    font-family: 'Karla', sans-serif;
 }
 
+/* :root {
+  --primary-color: #CC936C;
+  --secondary-color: #DEB594;
+} */
+
 :root {
-  --primary-color: #CC936C; /* 棕色主題色 */
+  --primary-color: #70a292;
+  --secondary-color: #C6D5D0;
 }
+
+/* :root {
+  --primary-color: #E8816E;
+  --secondary-color: #f59b8b;
+} */
+
 
 /* ul,
 li{
@@ -1032,7 +1044,7 @@ button.scrollTopStick.active {
 }
 .top-bar {
     padding: 15px 0;
-    border-bottom: 5px solid #d98d39;
+    border-bottom: 5px solid var(--secondary-color);
     background-color: var(--primary-color);
 }
 .top-bar .row{
@@ -4852,6 +4864,9 @@ a.next-slide.nav-active {
     -o-transform: translateY(-50%);
     left: -13px;
 }
+.mobile-nav > ul > li.menu-item-has-children.active > ul.sub-menu li:has(.third-level-menu):before {
+  top: 15px;
+}
 .res-log {
     margin-bottom: 30px;
 }
@@ -6520,4 +6535,22 @@ ul {
   transform: translateX(0);
   background-color: rgba(177, 113, 42, 0.1);
 }
+
+/* 取消選單項目的 marker */
+.menu-item-has-children::marker,
+.menu-item-has-children li::marker,
+.sub-menu li::marker {
+  content: none;
+  display: none;
+}
+
+li.menu-item-has-children > ul.sub-menu > li::marker {
+  content: none;
+  display: none;
+}
+
+.icon-book {
+  fill: var(--primary-color);
+}
+
 

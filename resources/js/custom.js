@@ -295,9 +295,9 @@ jQuery(document).ready(function ($) {
   }
   if ($('.events-carousal-slider')[0]) {
     $('.events-carousal-slider').slick({
-      slidesToShow: 5,
+      slidesToShow: 4,
 
-      slidesToScroll: 2,
+      slidesToScroll: 3,
 
       arrows: false,
 
@@ -313,7 +313,7 @@ jQuery(document).ready(function ($) {
 
       autoplay: true,
 
-      autoplaySpeed: 2000,
+      autoplaySpeed: 1000,
 
       speed: 1000,
 
