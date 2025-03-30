@@ -1,62 +1,4 @@
-/*
-Table of content
-1. Google font
-2. General Style
-    2.1 Loader
-3. Header One
-4. Header Two
-5. Header Three
-6. Hero One
-7. Hero Two
-8. Fellowship
-9. About One
-10. About Two
-11. About Three
-12. Recent Sermons One
-13. Digital Ministry
-14. Events Carousal
-15. Donation
-16. Blog
-17. Sponsors
-18. Subscribe
-19. Footer One
-20. CountDown
-21. About Two
-22. Church Prayers
-23. Recent Sermons Two
-24. Pastor
-25. Church Memories
-26. Causes Of Church
-27. Mass Timing
-28. Subscribe Two
-29. Hero Three
-30. LiveStream
-31. Event Three
-32. Support Us
-33. Footer Three
-34. Church Products
-35. Page 404
-36. Contact Us
-37. About Us
-   37.1- Pray
-38. Pastor Detail
-39. Our Ministries
-   39.1- Social Media
-   39.2- Catholic Church
-40. Cause Detail
-41. Event Detail
-42. Sermon Detail
-43. Blog Detail
-44. Circle Slider
-45. Audio
-46. Donation Model
-47. Product Detail
-48. Donation Page
-*/
-
 @import "@fortawesome/fontawesome-free/css/all.min.css";
-
-/* Google Font Karla  */
 @import url('https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap');
 /*  General Style  */
 *,
@@ -83,20 +25,38 @@ small{
    font-family: 'Karla', sans-serif;
 }
 
-/* :root {
+/* # colour 1 */
+:root {
   --primary-color: #CC936C;
   --secondary-color: #DEB594;
+}
+
+/* # colour 2 */
+:root {
+  --primary-color: #ECD1C3;
+  --secondary-color: #DEB594;
+}
+
+/* # colour 3 */
+/* :root {
+  --primary-color: #5E887B;
+  --secondary-color: #d8e8e2;
 } */
 
+
+/* # colour 4 */
 :root {
   --primary-color: #70a292;
   --secondary-color: #C6D5D0;
 }
 
+/* # colour 5 */
 /* :root {
-  --primary-color: #E8816E;
-  --secondary-color: #f59b8b;
+  --primary-color: #DBB7BB;
+  --secondary-color: #f4dbde;
 } */
+
+
 
 
 /* ul,
