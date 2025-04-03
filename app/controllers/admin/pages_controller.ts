@@ -13,8 +13,6 @@ export default class AdminPagesController {
    * Display a listing of pages
    */
   async index({ view, auth }: HttpContext) {
-    const user = auth.user!
-
     const pages = await Page.query()
       .preload('parent')
       .preload('translations')
