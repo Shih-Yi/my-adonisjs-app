@@ -21,6 +21,9 @@ export default defineConfig({
     devSourcemap: true,
   },
   build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
     manifest: true,
     outDir: 'public/assets',
     rollupOptions: {
