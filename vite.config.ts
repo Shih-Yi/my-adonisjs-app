@@ -8,7 +8,7 @@ export default defineConfig({
        * Entrypoints of your application. Each entrypoint will
        * result in a separate bundle.
        */
-      entrypoints: ['resources/js/app.js'],
+      entrypoints: ['resources/js/app.js', 'resources/js/admin/admin-app.js'],
 
       /**
        * Paths to watch and reload the browser on file change
@@ -25,7 +25,7 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
     manifest: true,
-    outDir: 'public/build',
+    outDir: 'public/assets',
     rollupOptions: {
       output: {
         entryFileNames: 'js/[name].js',
