@@ -81,6 +81,10 @@ export default defineConfig({
       reloadServer: false,
     },
     {
+      pattern: 'resources/lang/**/*.json',
+      reloadServer: false,
+    },
+    {
       pattern: 'public/**',
       reloadServer: false,
     },
