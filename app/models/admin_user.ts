@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, beforeSave } from '@adonisjs/lucid/orm'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
@@ -39,12 +39,5 @@ export default class AdminUser extends compose(BaseModel, AuthFinder) {
 
   async verifyPassword(plainPassword: string) {
     return await hash.verify(this.password, plainPassword)
-  }
-
-  @beforeSave()
-  static async hashPassword(adminUser: AdminUser) {
-    if (adminUser.$dirty.password) {
-      adminUser.password = await hash.make(adminUser.password)
-    }
   }
 }
