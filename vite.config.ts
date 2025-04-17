@@ -25,10 +25,12 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
     manifest: true,
-    outDir: 'public/assets',
+    outDir: 'public/build',
     rollupOptions: {
-      input: {
-        app: 'resources/js/app.js',
+      output: {
+        entryFileNames: 'js/[name].js',
+        chunkFileNames: 'js/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
       },
     },
   },
