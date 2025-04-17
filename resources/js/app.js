@@ -39,6 +39,9 @@ Fancybox.bind('[data-fancybox]', {
   // 可選：添加自定義配置
 })
 
+const allImages = import.meta.glob('../images/*.*', { eager: true })
+window.appImages = { ...allImages }
+
 // Import Custom Scripts
 import './custom'
 
